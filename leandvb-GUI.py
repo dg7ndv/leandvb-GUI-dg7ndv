@@ -15,11 +15,21 @@
 # TODO leandvb: --tune is broken, use --derotate instead
 # TODO provide fast switching between sets of changable favorite settings
 
-from Tkinter import *
-from tkFileDialog import *
-import ttk
+from tkinter import *                                   # Konstanten (W, EW, ...), Button, Frame, ...
+from tkinter import filedialog
+from tkinter.filedialog import askdirectory, askopenfilename
+#from tkFileDialog import *
+from tkinter import ttk
+import tkinter as tk
 import os
 import json
+
+# FEC-Auswahl: DVB-S nutzt --cr, DVB-S2 wird auf eine --modcods-Maske (QPSK) abgebildet
+# "auto"   -> DVB-S2: --modcods weglassen (leandvb erkennt selbst)
+# "manual" -> DVB-S2: modcods-Feld aus den Settings verwenden
+FEC_VALUES     = ("auto","manual","1/4","1/3","2/5","1/2","3/5","2/3","3/4","4/5","5/6","6/7","7/8","8/9","9/10")
+DVBS_FEC       = ("1/2","2/3","3/4","5/6","6/7","7/8")
+S2_QPSK_MODCOD = {"1/4":1,"1/3":2,"2/5":3,"1/2":4,"3/5":5,"2/3":6,"3/4":7,"4/5":8,"5/6":9,"8/9":10,"9/10":11}
 
 # settings for auxiliary files (parameters, run, stop)
 parameters_path = os.path.expanduser("~/") + ".leandvb-GUI/"
@@ -28,14 +38,14 @@ run_script      = parameters_path + "run.sh"
 stop_script     = parameters_path + "stop.sh"
 
 # show settings for auxiliary files (parameters, run, stop)
-print "parameters path:", parameters_path
-print "parameters file:",  parameters_file
-print "run script     :",  run_script
-print "stop script    :",  stop_script
+print ("parameters path:", parameters_path)
+print ("parameters file:",  parameters_file)
+print ("run script     :",  run_script)
+print ("stop script    :",  stop_script)
 
 # create parameters path if not existend
 if not os.path.exists(parameters_path):
-    print "create " + parameters_path
+    print( "create " + parameters_path)
     os.mkdir(parameters_path)
 
 # check max pipe size and adjust if needed
@@ -47,18 +57,18 @@ max_current = int(fd.readline())
 fd.close()
 
 if (max_current < max_needed):
-    print "max pipe size  :", max_current, ", will be set to", max_needed
+    print( "max pipe size  :", max_current, ", will be set to", max_needed)
     cmd = "bash -c 'echo " + str(max_needed) + " > /proc/sys/fs/pipe-max-size'"
     os.system("pkexec " + cmd)
 else:
-    print "max pipe size  :", max_current, ", this is ok"
+    print( "max pipe size  :", max_current, ", this is ok")
 
 #===== handle parameters (save, load, default) ================================
 
 parameters = dict()
 
 def parameters_save():
-    print "save parameters to file"
+    print ("save parameters to file")
     parameters["frequency"      ] = float(frequency.get())
     parameters["symbolrate"     ] = int(symbolrate.get())
     parameters["fec"            ] = fec.get()
@@ -101,14 +111,14 @@ def parameters_save():
 
 def parameters_load():
     global parameters
-    print "load parameters from file"
+    print( "load parameters from file")
     file = open(parameters_file, "r")
     parameters = json.load(file)
     file.close()
     guivars_init()
 
 def parameters_default():
-    print "load parameters with defaults"
+    print ("load parameters with defaults")
     parameters["frequency"      ] = 10491.500
     parameters["symbolrate"     ] = 1500
     parameters["fec"            ] = "1/2"
@@ -147,7 +157,7 @@ def parameters_default():
     guivars_init()
 
 def guivars_init():
-    print "initialize GUI variables"
+    print( "initialize GUI variables")
     bandwidth      .set(parameters["bandwidth"])
     const          .set(parameters["constellation"])
     debug          .set(parameters["debug"])
@@ -258,7 +268,7 @@ def dlg_settings():
         parameters_default()
 
     #----- dialog properties -----
-    dlg = Toplevel(root, borderwidth=4)
+    dlg = tk.Toplevel(root, borderwidth=4)
     dlg.title("Settings")
     dlg.transient(root)
     dlg.resizable(height = False, width = False)
@@ -481,7 +491,7 @@ def dlg_settings():
 
     lbl_fec = ttk.Label   (frm_dvb_options, text="code rate")
     cmb_fec = ttk.Combobox(frm_dvb_options, width=10, textvariable=fec, state="readonly")
-    cmb_fec ["values"] = ("1/2","2/3","3/4","5/6","6/7","7/8")
+    cmb_fec ["values"] = FEC_VALUES
     lbl_fec.grid (row=2, column=0, sticky=W)
     cmb_fec.grid (row=2, column=1, sticky=W)
     options_dvbs.append(lbl_fec)
@@ -564,7 +574,7 @@ def dlg_settings():
 
 #===== root window ============================================================
 
-root = Tk()
+root = tk.Tk()
 
 #----- window properties -----
 root.title('LeanDVB DVBS + DVBS2 interface')
@@ -573,41 +583,41 @@ frm_root = ttk.Frame(root, borderwidth=8)
 frm_root.pack()
 
 #----- 'declare' user interface variables -----
-bandwidth       = IntVar()
-const           = StringVar()
-debug           = StringVar()
-fastdrift       = IntVar()
-fastlock        = IntVar()
-fec             = StringVar()
-framesizes      = StringVar()
-frequency       = DoubleVar()
-gain            = IntVar()
-gui             = IntVar()
-hardmetric      = IntVar()
-inpipe          = IntVar()
-ldpc_bf         = IntVar()
-ldpchelper_file = StringVar()
-ldpchelper_path = StringVar()
-leandvb_file    = StringVar()
-leandvb_path    = StringVar()
-lnblo           = DoubleVar()
-maxsens         = IntVar()
-modcods         = StringVar()
-nhelpers        = IntVar()
-ppm             = IntVar()
-rolloff         = DoubleVar()
-rrcrej          = DoubleVar()
-rtldongle       = IntVar()
-rtlsdr_file     = StringVar()
-rtlsdr_path     = StringVar()
-sampler         = StringVar()
-standard        = StringVar()
-strongpls       = IntVar()
-symbolrate      = IntVar()
-tune            = IntVar()
-viewer_file     = StringVar()
-viewer_path     = StringVar()
-viterbi         = IntVar()
+bandwidth       = tk.IntVar()
+const           = tk.StringVar()
+debug           = tk.StringVar()
+fastdrift       = tk.IntVar()
+fastlock        = tk.IntVar()
+fec             = tk.StringVar()
+framesizes      = tk.StringVar()
+frequency       = tk.DoubleVar()
+gain            = tk.IntVar()
+gui             = tk.IntVar()
+hardmetric      = tk.IntVar()
+inpipe          = tk.IntVar()
+ldpc_bf         = tk.IntVar()
+ldpchelper_file = tk.StringVar()
+ldpchelper_path = tk.StringVar()
+leandvb_file    = tk.StringVar()
+leandvb_path    = tk.StringVar()
+lnblo           = tk.DoubleVar()
+maxsens         = tk.IntVar()
+modcods         = tk.StringVar()
+nhelpers        = tk.IntVar()
+ppm             = tk.IntVar()
+rolloff         = tk.DoubleVar()
+rrcrej          = tk.DoubleVar()
+rtldongle       = tk.IntVar()
+rtlsdr_file     = tk.StringVar()
+rtlsdr_path     = tk.StringVar()
+sampler         = tk.StringVar()
+standard        = tk.StringVar()
+strongpls       = tk.IntVar()
+symbolrate      = tk.IntVar()
+tune            = tk.IntVar()
+viewer_file     = tk.StringVar()
+viewer_path     = tk.StringVar()
+viterbi         = tk.IntVar()
 
 #----- initialize parameters dictionary -----
 if os.path.isfile(parameters_file):
@@ -629,10 +639,17 @@ def on_start():
     opt_gui        = " --gui"      if gui.get()      == True else ""
     opt_maxsens    = " --hq"       if maxsens.get()  == True else ""
     opt_const      = (" --const " + const.get())                   if standard.get() == "DVB-S" else ""
-    opt_fec        = (" --cr "    + fec.get()  )                   if standard.get() == "DVB-S" else ""
+    opt_fec        = (" --cr "    + fec.get()  )                   if standard.get() == "DVB-S" and fec.get() in DVBS_FEC else ""
+    if standard.get() == "DVB-S2":
+        if fec.get() in S2_QPSK_MODCOD:
+            modcods.set("0x%04x" % (1 << S2_QPSK_MODCOD[fec.get()]))
+        elif fec.get() == "auto":
+            modcods.set("")
+        elif fec.get() != "manual":
+            print("FEC " + fec.get() + " gibt es in DVB-S2 nicht - verwende modcods aus den Settings")
     opt_viterbi    = " --viterbi"     if viterbi.get()    == True and standard.get() == "DVB-S" else ""
     opt_hardmetric = " --hard-metric" if hardmetric.get() == True and standard.get() == "DVB-S" else ""
-    opt_strongpls  = " --strongpls"   if strongpls.get()  == True and standard.get() == "DVB-S2" else ""
+    opt_strongpls  = " --strongpls"   if strongpls.get()  == True and standard.get() == "DVB-S2" else ""  # Achtung: leandvb 1.2.0 bricht mit "--strongpls is broken" ab
     opt_modcods    = (" --modcods "    + modcods.get())    if modcods.get()    != "" and standard.get() == "DVB-S2" else ""
     opt_framesizes = (" --framesizes " + framesizes.get()) if framesizes.get() != "" and standard.get() == "DVB-S2" else ""
     opt_fastdrift  = " --fastdrift" if fastdrift.get() == True and standard.get() == "DVB-S2" else ""
@@ -658,11 +675,11 @@ def on_start():
     viewer_sub = "\"" + viewer_path.get() + "\"" + viewer_file.get()  + viewer_opt
 
     print
-    print "leandvb:", leandvb_sub
+    print( "leandvb:", leandvb_sub)
     print
-    print "rtlsdr:", rtlsdr_sub
+    print( "rtlsdr:", rtlsdr_sub)
     print
-    print "viewer:", viewer_sub
+    print( "viewer:", viewer_sub)
     print
 
     sub = rtlsdr_sub + \
@@ -705,56 +722,58 @@ def on_exit():
     on_stop()
     root.destroy()
 
+#W = tk.StringVar(value="Standard-Pfad")
+
 #----- user interface -----
 lbl_frequency = ttk.Label (frm_root, text="Frequency")
 cmb_frequency = ttk.Combobox (frm_root, width=10, textvariable=frequency)
 cmb_frequency ["values"] = ("10491.500","1252","1257","1260","436","437","1255","1252.600","1280","1250","1253")
 lb2_frequency = ttk.Label (frm_root, text="MHz")
-lbl_frequency.grid (row=0, column=0, sticky=W, padx=5)
-cmb_frequency.grid (row=0, column=1, sticky=W)
-lb2_frequency.grid (row=0, column=2, sticky=W, padx=5)
+lbl_frequency.grid (row=0, column=0, sticky='W', padx=5)
+cmb_frequency.grid (row=0, column=1, sticky='W')
+lb2_frequency.grid (row=0, column=2, sticky='W', padx=5)
 
 lbl_symbolrate = ttk.Label (frm_root, text="Symbolrate")
 cmb_symbolrate = ttk.Combobox (frm_root, width=10, textvariable=symbolrate)
 cmb_symbolrate ["values"] = ("33","66","125","150","250","333","400","500","600","750","1000","1500","2000","2083","3000","4000","4340","5000")
 lb2_symbolrate = ttk.Label (frm_root, text="kHz")
-lbl_symbolrate.grid (row=1, column=0, sticky=W, padx=5)
-cmb_symbolrate.grid (row=1, column=1, sticky=W)
-lb2_symbolrate.grid (row=1, column=2, sticky=W, padx=5)
+lbl_symbolrate.grid (row=1, column=0, sticky='W', padx=5)
+cmb_symbolrate.grid (row=1, column=1, sticky='W')
+lb2_symbolrate.grid (row=1, column=2, sticky='W', padx=5)
 
 lbl_bandwidth = ttk.Label (frm_root, text="Bandwidth")
 cmb_bandwidth = ttk.Combobox (frm_root, width=10, textvariable=bandwidth)
 cmb_bandwidth ["values"] = ("2400","2000","1000","500")
 lb2_bandwidth = ttk.Label (frm_root, text="kHz")
-lbl_bandwidth.grid (row=2, column=0, sticky=W, padx=5)
-cmb_bandwidth.grid (row=2, column=1, sticky=W)
-lb2_bandwidth.grid (row=2, column=2, sticky=W, padx=5)
+lbl_bandwidth.grid (row=2, column=0, sticky='W', padx=5)
+cmb_bandwidth.grid (row=2, column=1, sticky='W')
+lb2_bandwidth.grid (row=2, column=2, sticky='W', padx=5)
 
 lbl_tune = ttk.Label (frm_root, text="Tune")
 cmb_tune = ttk.Combobox (frm_root, width=10, textvariable=tune)
 cmb_tune ["values"] = ("100","500","1000","2000","5000","10000","-100","-500","-1000","-2000","-5000","-10000")
 lb2_tune = ttk.Label (frm_root, text="Hz")
-lbl_tune.grid (row=3, column=0, sticky=W, padx=5)
-cmb_tune.grid (row=3, column=1, sticky=W)
-lb2_tune.grid (row=3, column=2, sticky=W, padx=5)
+lbl_tune.grid (row=3, column=0, sticky='W', padx=5)
+cmb_tune.grid (row=3, column=1, sticky='W')
+lb2_tune.grid (row=3, column=2, sticky='W', padx=5)
 
 lbl_lnblo = ttk.Label (frm_root, text="LNB LO")
 ent_lnblo = ttk.Entry (frm_root, width=10, textvariable=lnblo)
 lb2_lnblo = ttk.Label (frm_root, text="MHz")
-lbl_lnblo.grid (row=4, column=0, sticky=W)
-ent_lnblo.grid (row=4, column=1, sticky=W)
-lb2_lnblo.grid (row=4, column=2, sticky=W, padx=5)
+lbl_lnblo.grid (row=4, column=0, sticky='W')
+ent_lnblo.grid (row=4, column=1, sticky='W')
+lb2_lnblo.grid (row=4, column=2, sticky='W', padx=5)
 
 lbl_fec = ttk.Label (frm_root, text="FEC")
 cmb_fec = ttk.Combobox (frm_root, width=10, textvariable=fec)
-cmb_fec ["values"] = ("1/2","2/3","3/4","5/6","6/7","7/8")
+cmb_fec ["values"] = FEC_VALUES
 lb2_fec = ttk.Label (frm_root, text="Div")
-lbl_fec.grid (row=5, column=0, sticky=W, padx=5)
-cmb_fec.grid (row=5, column=1, sticky=W)
-lb2_fec.grid (row=5, column=2, sticky=W, padx=5)
+lbl_fec.grid (row=5, column=0, sticky='W', padx=5)
+cmb_fec.grid (row=5, column=1, sticky='W')
+lb2_fec.grid (row=5, column=2, sticky='W', padx=5)
 
-lbl_separator = Frame (frm_root, height=1, bg="grey")
-lbl_separator.grid (row=6, column=0, sticky=EW, columnspan=6, pady=6)
+lbl_separator = tk.Frame (frm_root, height=1, bg="grey")
+lbl_separator.grid (row=6, column=0, sticky='EW', columnspan=6, pady=6)
 
 btn_start = ttk.Button (frm_root, text='START', command=on_start)
 btn_start.grid (row=7, column=0)
@@ -766,11 +785,11 @@ btn_settings = ttk.Button (frm_root, text='Settings', command=dlg_settings)
 btn_settings.grid (row=7, column=3, columnspan=2)
 
 if os.path.isfile("logo.png"):
-    img_logo = PhotoImage(file="logo.png")
+    img_logo = tk.PhotoImage(file="logo.png")
 else:
     img_logo = None
-lbl_logo = Label(frm_root, image=img_logo)
-lbl_logo.grid (row=0, column=3, sticky=W+E+N+S, columnspan=2, rowspan=6, padx=5, pady=5)
+lbl_logo = tk.Label(frm_root, image=img_logo)
+lbl_logo.grid (row=0, column=3, sticky='nesw', columnspan=2, rowspan=6, padx=5, pady=5)
 
 cmb_frequency.focus_set()
 
@@ -778,5 +797,5 @@ cmb_frequency.focus_set()
 root.protocol("WM_DELETE_WINDOW", on_exit)
 
 #----- start user interface -----
-mainloop()
+root.mainloop()
 
