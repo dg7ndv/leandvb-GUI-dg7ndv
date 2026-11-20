@@ -1,0 +1,257 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1700 900" width="100%" font-family="DejaVu Sans, Arial, sans-serif" role="img" aria-label="Raspberry Pi 5 mit 6 RTL-SDR-Sticks, Web-Interface und MultiPlayer-Client">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#46556a"/></marker></defs>
+<rect x="0" y="0" width="1700" height="900" rx="12" fill="#f7f9fb" stroke="#d3d9e0" stroke-width="1.5" />
+<text x="20" y="32" font-size="19" fill="#1b1f24" font-weight="bold" text-anchor="start">QO 100 Multi-Zapper: Raspberry Pi 5 mit 6 RTL-SDR-Sticks → Web-Interface → Client (MultiPlayer)</text>
+<text x="20" y="62" font-size="15" fill="#1f5fa8" font-weight="bold" text-anchor="start">1  Raspberry Pi 5 (ohne Bildschirm, Dienst datvrx-dienst)</text>
+<rect x="20" y="72" width="470" height="810" rx="12" fill="#eaf1f8" stroke="#46556a" stroke-width="2" />
+<rect x="40" y="88" width="430" height="58" rx="8" fill="#fff7e0" stroke="#c9a227" stroke-width="1.5" />
+<text x="255" y="111" font-size="14" fill="#1b1f24" font-weight="bold" text-anchor="middle">Antenne → LNB → Splitter (6 Ausgänge)</text>
+<text x="255" y="132" font-size="11" fill="#5b6573" font-weight="normal" text-anchor="middle">QO-100 10,49 GHz, Bake 10491,5 MHz, Signale bis 10500 MHz</text>
+<line x1="145" y1="146" x2="145" y2="160" stroke="#c9a227" stroke-width="1.5"  />
+<line x1="365" y1="146" x2="365" y2="160" stroke="#c9a227" stroke-width="1.5"  />
+<text x="255" y="170" font-size="10" fill="#8a6d00" font-weight="normal" text-anchor="middle">Koax je Stick</text>
+<line x1="145" y1="160" x2="145" y2="180" stroke="#c9a227" stroke-width="1.5"  />
+<rect x="40" y="180" width="210" height="66" rx="8" fill="#f08a00" stroke="#222" stroke-width="1.5" />
+<text x="52" y="206" font-size="17" fill="#fff" font-weight="bold" text-anchor="start">RTL1</text>
+<text x="52" y="226" font-size="11" fill="#fff" font-weight="normal" text-anchor="start">Stick dg7ndv01</text>
+<text x="52" y="240" font-size="11" fill="#fff" font-weight="normal" text-anchor="start">UDP 230.0.0.30:1234</text>
+<line x1="365" y1="160" x2="365" y2="180" stroke="#c9a227" stroke-width="1.5"  />
+<rect x="260" y="180" width="210" height="66" rx="8" fill="#2a7be4" stroke="#222" stroke-width="1.5" />
+<text x="272" y="206" font-size="17" fill="#fff" font-weight="bold" text-anchor="start">RTL2</text>
+<text x="272" y="226" font-size="11" fill="#fff" font-weight="normal" text-anchor="start">Stick dg7ndv02</text>
+<text x="272" y="240" font-size="11" fill="#fff" font-weight="normal" text-anchor="start">UDP 230.0.0.31:1234</text>
+<rect x="40" y="264" width="210" height="66" rx="8" fill="#8e44ad" stroke="#222" stroke-width="1.5" />
+<text x="52" y="290" font-size="17" fill="#fff" font-weight="bold" text-anchor="start">RTL3</text>
+<text x="52" y="310" font-size="11" fill="#fff" font-weight="normal" text-anchor="start">Stick dg7ndv03</text>
+<text x="52" y="324" font-size="11" fill="#fff" font-weight="normal" text-anchor="start">UDP 230.0.0.32:1234</text>
+<rect x="260" y="264" width="210" height="66" rx="8" fill="#16a085" stroke="#222" stroke-width="1.5" />
+<text x="272" y="290" font-size="17" fill="#fff" font-weight="bold" text-anchor="start">RTL4</text>
+<text x="272" y="310" font-size="11" fill="#fff" font-weight="normal" text-anchor="start">Stick dg7ndv04</text>
+<text x="272" y="324" font-size="11" fill="#fff" font-weight="normal" text-anchor="start">UDP 230.0.0.33:1234</text>
+<rect x="40" y="348" width="210" height="66" rx="8" fill="#c0392b" stroke="#222" stroke-width="1.5" />
+<text x="52" y="374" font-size="17" fill="#fff" font-weight="bold" text-anchor="start">RTL5</text>
+<text x="52" y="394" font-size="11" fill="#fff" font-weight="normal" text-anchor="start">Stick dg7ndv05</text>
+<text x="52" y="408" font-size="11" fill="#fff" font-weight="normal" text-anchor="start">UDP 230.0.0.34:1234</text>
+<rect x="260" y="348" width="210" height="66" rx="8" fill="#6b7b8c" stroke="#222" stroke-width="1.5" />
+<text x="272" y="374" font-size="17" fill="#fff" font-weight="bold" text-anchor="start">RTL6</text>
+<text x="272" y="394" font-size="11" fill="#fff" font-weight="normal" text-anchor="start">Stick dg7ndv06</text>
+<text x="272" y="408" font-size="11" fill="#fff" font-weight="normal" text-anchor="start">UDP 230.0.0.35:1234</text>
+<rect x="40" y="434" width="430" height="40" rx="8" fill="#dfe6ee" stroke="#46556a" stroke-width="1.5" />
+<text x="255" y="459" font-size="13" fill="#1b1f24" font-weight="normal" text-anchor="middle">aktiver USB-3-Hub (eigene 5-V-Versorgung) am Pi</text>
+<line x1="140" y1="428" x2="140" y2="434" stroke="#46556a" stroke-width="2"  />
+<line x1="360" y1="428" x2="360" y2="434" stroke="#46556a" stroke-width="2"  />
+<rect x="40" y="494" width="430" height="214" rx="10" fill="#fff" stroke="#1f7a3a" stroke-width="2" />
+<text x="255" y="518" font-size="14" fill="#1f7a3a" font-weight="bold" text-anchor="middle">Dienst datvrx_dienst.py + zapper.py</text>
+<text x="56" y="542" font-size="12.5" fill="#1b1f24" font-weight="normal" text-anchor="start">• BATC-Spektrum liest Signale (Internet)</text>
+<text x="56" y="564" font-size="12.5" fill="#1b1f24" font-weight="normal" text-anchor="start">• Auto-Scan: Rufzeichen, MER, Pegel (datvrx)</text>
+<text x="56" y="586" font-size="12.5" fill="#1b1f24" font-weight="normal" text-anchor="start">• Autoverteiler: neues Signal → freier Stick</text>
+<text x="56" y="608" font-size="12.5" fill="#1b1f24" font-weight="normal" text-anchor="start">• Bake-Offset je Stick (Cache 7 Tage)</text>
+<text x="56" y="630" font-size="12.5" fill="#1b1f24" font-weight="normal" text-anchor="start">• OnlyBake=&gt;RTL1, Display-Steuerung</text>
+<text x="56" y="652" font-size="12.5" fill="#1b1f24" font-weight="normal" text-anchor="start">• Verteil-Protokoll, Fehlerbericht</text>
+<text x="56" y="674" font-size="12.5" fill="#1b1f24" font-weight="normal" text-anchor="start">• JSON-API und MQTT (optional)</text>
+<rect x="40" y="724" width="430" height="56" rx="8" fill="#fff" stroke="#7a8796" stroke-width="1.5" />
+<text x="255" y="746" font-size="13" fill="#1b1f24" font-weight="bold" text-anchor="middle">HDMI-A-1 / HDMI-A-2 → Monitor</text>
+<text x="255" y="766" font-size="11" fill="#5b6573" font-weight="normal" text-anchor="middle">VLC im Vollbild (RTL1 oder Signal), Rufzeichen-Einblendung</text>
+<rect x="40" y="796" width="430" height="70" rx="8" fill="#fff" stroke="#7a8796" stroke-width="1.5" />
+<text x="255" y="820" font-size="13" fill="#1b1f24" font-weight="bold" text-anchor="middle">Netzwerk des Pi (LAN)</text>
+<text x="255" y="840" font-size="11.5" fill="#1b1f24" font-weight="normal" text-anchor="middle">HTTP :8554 Web + API   ·   HTTP :8555 Handy-Seite</text>
+<text x="255" y="858" font-size="11.5" fill="#1b1f24" font-weight="normal" text-anchor="middle">UDP-Multicast 230.0.0.30 … 230.0.0.35 : 1234</text>
+<text x="530" y="62" font-size="15" fill="#1f5fa8" font-weight="bold" text-anchor="start">2  Web-Interface auf dem Pi (Browser am PC oder Handy)</text>
+<rect x="530" y="72" width="550" height="346" rx="10" fill="#fff" stroke="#46556a" stroke-width="2" />
+<text x="546" y="100" font-size="11" fill="#5b6573" font-weight="normal" text-anchor="start">Hauptmaske  http://&lt;Pi&gt;:8554/</text>
+<text x="546" y="124" font-size="16" fill="#1b1f24" font-weight="bold" text-anchor="start">QO 100 Multi-Zapper – DG7NDV</text>
+<rect x="930" y="108" width="32" height="22" rx="11" fill="#fff" stroke="#9aa5b1" stroke-width="1" />
+<text x="946" y="123" font-size="11" fill="#1b1f24" font-weight="normal" text-anchor="middle">?</text>
+<rect x="966" y="108" width="32" height="22" rx="11" fill="#fff" stroke="#9aa5b1" stroke-width="1" />
+<text x="982" y="123" font-size="11" fill="#1b1f24" font-weight="normal" text-anchor="middle">⚙B</text>
+<rect x="1002" y="108" width="32" height="22" rx="11" fill="#fff" stroke="#9aa5b1" stroke-width="1" />
+<text x="1018" y="123" font-size="11" fill="#1b1f24" font-weight="normal" text-anchor="middle">⚙D</text>
+<rect x="1038" y="108" width="32" height="22" rx="11" fill="#fff" stroke="#9aa5b1" stroke-width="1" />
+<text x="1054" y="123" font-size="11" fill="#1b1f24" font-weight="normal" text-anchor="middle">⚙</text>
+<rect x="546" y="138" width="140" height="20" rx="10" fill="#fff" stroke="#9aa5b1" stroke-width="1" />
+<text x="616" y="152" font-size="11" fill="#1b1f24" font-weight="normal" text-anchor="middle">Bake neu referenzieren</text>
+<rect x="692" y="138" width="140" height="20" rx="10" fill="#fff" stroke="#9aa5b1" stroke-width="1" />
+<text x="762" y="152" font-size="11" fill="#1b1f24" font-weight="normal" text-anchor="middle">RTL1 beim Start: Bake</text>
+<rect x="838" y="138" width="90" height="20" rx="10" fill="#fff" stroke="#9aa5b1" stroke-width="1" />
+<text x="883" y="152" font-size="11" fill="#1b1f24" font-weight="normal" text-anchor="middle">Alle scannen</text>
+<rect x="934" y="138" width="80" height="20" rx="10" fill="#fff" stroke="#9aa5b1" stroke-width="1" />
+<text x="974" y="152" font-size="11" fill="#1b1f24" font-weight="normal" text-anchor="middle">Auto-Scan</text>
+<rect x="546" y="164" width="100" height="20" rx="10" fill="#1f7a3a" stroke="#9aa5b1" stroke-width="1" />
+<text x="596" y="178" font-size="11" fill="#fff" font-weight="normal" text-anchor="middle">Autoverteiler: AN</text>
+<rect x="652" y="164" width="100" height="20" rx="10" fill="#fff" stroke="#9aa5b1" stroke-width="1" />
+<text x="702" y="178" font-size="11" fill="#1b1f24" font-weight="normal" text-anchor="middle">OnlyBake=&gt;RTL1</text>
+<text x="764" y="179" font-size="11" fill="#1b1f24" font-weight="normal" text-anchor="start">4 Sticks  ☑RTL1 ☑RTL2 ☑RTL3 ☑RTL4 ☑RTL5 ☑RTL6</text>
+<rect x="546" y="192" width="518" height="20" rx="4" fill="#fff" stroke="#d3d9e0" stroke-width="1.5" />
+<text x="554" y="206" font-size="11" fill="#1b1f24" font-weight="normal" text-anchor="start">RTL1: 10497.745 MHz 333K (fest)  |  RTL2: 10498.753 MHz  |  RTL3: frei</text>
+<text x="550" y="232" font-size="10.5" fill="#5b6573" font-weight="bold" text-anchor="start">Stick</text>
+<text x="670" y="232" font-size="10.5" fill="#5b6573" font-weight="bold" text-anchor="start">MER</text>
+<text x="710" y="232" font-size="10.5" fill="#5b6573" font-weight="bold" text-anchor="start">Signal</text>
+<text x="780" y="232" font-size="10.5" fill="#5b6573" font-weight="bold" text-anchor="start">Rufzeichen</text>
+<text x="850" y="232" font-size="10.5" fill="#5b6573" font-weight="bold" text-anchor="start">Provider</text>
+<text x="935" y="232" font-size="10.5" fill="#5b6573" font-weight="bold" text-anchor="start">Modul.</text>
+<text x="990" y="232" font-size="10.5" fill="#5b6573" font-weight="bold" text-anchor="start">Es/N0</text>
+<text x="1030" y="232" font-size="10.5" fill="#5b6573" font-weight="bold" text-anchor="start">Pegel</text>
+<rect x="546" y="238" width="518" height="28" rx="3" fill="#fff" stroke="#d3d9e0" stroke-width="1" />
+<rect x="550" y="245" width="26" height="15" rx="7.5" fill="#fff" stroke="#9aa5b1" stroke-width="1" />
+<text x="563" y="256.5" font-size="8" fill="#1b1f24" font-weight="normal" text-anchor="middle">R1</text>
+<rect x="578" y="245" width="26" height="15" rx="7.5" fill="#fff" stroke="#9aa5b1" stroke-width="1" />
+<text x="591" y="256.5" font-size="8" fill="#1b1f24" font-weight="normal" text-anchor="middle">R2</text>
+<rect x="606" y="245" width="26" height="15" rx="7.5" fill="#fff" stroke="#9aa5b1" stroke-width="1" />
+<text x="619" y="256.5" font-size="8" fill="#1b1f24" font-weight="normal" text-anchor="middle">R3</text>
+<rect x="634" y="245" width="26" height="15" rx="7.5" fill="#fff" stroke="#9aa5b1" stroke-width="1" />
+<text x="647" y="256.5" font-size="8" fill="#1b1f24" font-weight="normal" text-anchor="middle">R4</text>
+<text x="670" y="256" font-size="11" fill="#1b1f24" font-weight="normal" text-anchor="start">7.8</text>
+<text x="710" y="256" font-size="11" fill="#1b1f24" font-weight="normal" text-anchor="start">10497.7</text>
+<text x="780" y="256" font-size="11" fill="#1b1f24" font-weight="bold" text-anchor="start">A71A</text>
+<text x="850" y="256" font-size="11" fill="#1b1f24" font-weight="normal" text-anchor="start">ESP32-DATV</text>
+<text x="935" y="256" font-size="11" fill="#1b1f24" font-weight="normal" text-anchor="start">Bake</text>
+<rect x="546" y="268" width="518" height="28" rx="3" fill="#fff" stroke="#d3d9e0" stroke-width="1" />
+<rect x="550" y="275" width="26" height="15" rx="7.5" fill="#fff" stroke="#9aa5b1" stroke-width="1" />
+<text x="563" y="286.5" font-size="8" fill="#1b1f24" font-weight="normal" text-anchor="middle">R1</text>
+<rect x="578" y="275" width="26" height="15" rx="7.5" fill="#fff" stroke="#9aa5b1" stroke-width="1" />
+<text x="591" y="286.5" font-size="8" fill="#1b1f24" font-weight="normal" text-anchor="middle">R2</text>
+<rect x="606" y="275" width="26" height="15" rx="7.5" fill="#fff" stroke="#9aa5b1" stroke-width="1" />
+<text x="619" y="286.5" font-size="8" fill="#1b1f24" font-weight="normal" text-anchor="middle">R3</text>
+<rect x="634" y="275" width="26" height="15" rx="7.5" fill="#fff" stroke="#9aa5b1" stroke-width="1" />
+<text x="647" y="286.5" font-size="8" fill="#1b1f24" font-weight="normal" text-anchor="middle">R4</text>
+<text x="670" y="286" font-size="11" fill="#1b1f24" font-weight="normal" text-anchor="start">7.8</text>
+<text x="710" y="286" font-size="11" fill="#1b1f24" font-weight="normal" text-anchor="start">10497.7</text>
+<text x="780" y="286" font-size="11" fill="#1b1f24" font-weight="bold" text-anchor="start">CU3AT</text>
+<text x="850" y="286" font-size="11" fill="#1b1f24" font-weight="normal" text-anchor="start">ESP32-DATV</text>
+<text x="935" y="286" font-size="11" fill="#1b1f24" font-weight="normal" text-anchor="start">QPSK 2/5</text>
+<rect x="546" y="298" width="518" height="28" rx="3" fill="#e4f3e8" stroke="#d3d9e0" stroke-width="1" />
+<rect x="550" y="305" width="26" height="15" rx="7.5" fill="#fff" stroke="#9aa5b1" stroke-width="1" />
+<text x="563" y="316.5" font-size="8" fill="#1b1f24" font-weight="normal" text-anchor="middle">R1</text>
+<rect x="578" y="305" width="26" height="15" rx="7.5" fill="#1f7a3a" stroke="#9aa5b1" stroke-width="1" />
+<text x="591" y="316.5" font-size="8" fill="#fff" font-weight="normal" text-anchor="middle">R2</text>
+<rect x="606" y="305" width="26" height="15" rx="7.5" fill="#fff" stroke="#9aa5b1" stroke-width="1" />
+<text x="619" y="316.5" font-size="8" fill="#1b1f24" font-weight="normal" text-anchor="middle">R3</text>
+<rect x="634" y="305" width="26" height="15" rx="7.5" fill="#fff" stroke="#9aa5b1" stroke-width="1" />
+<text x="647" y="316.5" font-size="8" fill="#1b1f24" font-weight="normal" text-anchor="middle">R4</text>
+<text x="670" y="316" font-size="11" fill="#1b1f24" font-weight="normal" text-anchor="start">7.8</text>
+<text x="710" y="316" font-size="11" fill="#1b1f24" font-weight="normal" text-anchor="start">10497.7</text>
+<text x="780" y="316" font-size="11" fill="#1b1f24" font-weight="bold" text-anchor="start">DK0PU</text>
+<text x="850" y="316" font-size="11" fill="#1b1f24" font-weight="normal" text-anchor="start">ESP32-DATV</text>
+<text x="935" y="316" font-size="11" fill="#1b1f24" font-weight="normal" text-anchor="start">QPSK 3/4</text>
+<rect x="546" y="336" width="518" height="36" rx="6" fill="#f4f6f8" stroke="#d3d9e0" stroke-width="1" />
+<text x="556" y="353" font-size="10.5" fill="#1b1f24" font-weight="normal" text-anchor="start">CPU gesamt</text>
+<rect x="630" y="346" width="300" height="8" rx="4" fill="#d3d9e0" stroke="none" stroke-width="0" />
+<rect x="630" y="346" width="90" height="8" rx="4" fill="#2e8b4a" stroke="none" stroke-width="0" />
+<text x="940" y="354" font-size="10.5" fill="#1b1f24" font-weight="normal" text-anchor="start">17 %  min/max</text>
+<text x="556" y="367" font-size="10.5" fill="#5b6573" font-weight="normal" text-anchor="start">Dienst / Temperatur / Last</text>
+<rect x="546" y="380" width="72" height="20" rx="10" fill="#f08a00" stroke="#9aa5b1" stroke-width="1" />
+<text x="582" y="394" font-size="9" fill="#fff" font-weight="normal" text-anchor="middle">VLC·RTL1</text>
+<rect x="624" y="380" width="72" height="20" rx="10" fill="#2a7be4" stroke="#9aa5b1" stroke-width="1" />
+<text x="660" y="394" font-size="9" fill="#fff" font-weight="normal" text-anchor="middle">VLC·RTL2</text>
+<text x="706" y="394" font-size="10.5" fill="#1b1f24" font-weight="normal" text-anchor="start">Player (UDP) · Playlist je Stick · BATC-Spektrum</text>
+<rect x="530" y="436" width="150" height="330" rx="20" fill="#222" stroke="#222" stroke-width="2" />
+<rect x="540" y="458" width="130" height="286" rx="6" fill="#fff" stroke="none" stroke-width="0" />
+<text x="605" y="478" font-size="10.5" fill="#1b1f24" font-weight="bold" text-anchor="middle">Handy-Seite :8555</text>
+<rect x="550" y="490" width="110" height="34" rx="17" fill="#f08a00" stroke="none" stroke-width="0" />
+<text x="605" y="512" font-size="11" fill="#fff" font-weight="bold" text-anchor="middle">▶ VLC · RTL1</text>
+<rect x="550" y="534" width="110" height="34" rx="17" fill="#2a7be4" stroke="none" stroke-width="0" />
+<text x="605" y="556" font-size="11" fill="#fff" font-weight="bold" text-anchor="middle">▶ VLC · RTL2</text>
+<rect x="550" y="578" width="110" height="34" rx="17" fill="#8e44ad" stroke="none" stroke-width="0" />
+<text x="605" y="600" font-size="11" fill="#fff" font-weight="bold" text-anchor="middle">▶ VLC · RTL3</text>
+<text x="605" y="640" font-size="10.5" fill="#1b1f24" font-weight="normal" text-anchor="middle">Signalliste mit</text>
+<text x="605" y="654" font-size="10.5" fill="#1b1f24" font-weight="normal" text-anchor="middle">Rufzeichen, MER</text>
+<text x="605" y="668" font-size="10.5" fill="#1b1f24" font-weight="normal" text-anchor="middle">Klick = VLC starten</text>
+<text x="605" y="726" font-size="10" fill="#1a5fb4" font-weight="normal" text-anchor="middle">Link zur Hauptseite</text>
+<rect x="696" y="436" width="186" height="76" rx="8" fill="#fff" stroke="#7a8796" stroke-width="1.5" />
+<text x="706" y="458" font-size="12.5" fill="#1b1f24" font-weight="bold" text-anchor="start">⚙  Einstellungen</text>
+<text x="706" y="476" font-size="11" fill="#1a5fb4" font-weight="normal" text-anchor="start">/config</text>
+<text x="706" y="494" font-size="10" fill="#5b6573" font-weight="normal" text-anchor="start">LO, Sticks, Verteilen, MQTT</text>
+<rect x="890" y="436" width="186" height="76" rx="8" fill="#fff" stroke="#7a8796" stroke-width="1.5" />
+<text x="900" y="458" font-size="12.5" fill="#1b1f24" font-weight="bold" text-anchor="start">⚙D  Displays</text>
+<text x="900" y="476" font-size="11" fill="#1a5fb4" font-weight="normal" text-anchor="start">/display</text>
+<text x="900" y="494" font-size="10" fill="#5b6573" font-weight="normal" text-anchor="start">HDMI, Player, Einblendung</text>
+<rect x="696" y="519" width="186" height="76" rx="8" fill="#fff" stroke="#7a8796" stroke-width="1.5" />
+<text x="706" y="541" font-size="12.5" fill="#1b1f24" font-weight="bold" text-anchor="start">⚙B  Bake</text>
+<text x="706" y="559" font-size="11" fill="#1a5fb4" font-weight="normal" text-anchor="start">/bake</text>
+<text x="706" y="577" font-size="10" fill="#5b6573" font-weight="normal" text-anchor="start">Offset, Rückfall, Start-Haken</text>
+<rect x="890" y="519" width="186" height="76" rx="8" fill="#fff" stroke="#7a8796" stroke-width="1.5" />
+<text x="900" y="541" font-size="12.5" fill="#1b1f24" font-weight="bold" text-anchor="start">?  Hilfe / Anleitung</text>
+<text x="900" y="559" font-size="11" fill="#1a5fb4" font-weight="normal" text-anchor="start">/hilfe, /anleitung</text>
+<text x="900" y="577" font-size="10" fill="#5b6573" font-weight="normal" text-anchor="start">Kurzhilfe und diese Anleitung</text>
+<rect x="696" y="602" width="186" height="76" rx="8" fill="#fff" stroke="#7a8796" stroke-width="1.5" />
+<text x="706" y="624" font-size="12.5" fill="#1b1f24" font-weight="bold" text-anchor="start">📝  Protokoll</text>
+<text x="706" y="642" font-size="11" fill="#1a5fb4" font-weight="normal" text-anchor="start">/protokoll</text>
+<text x="706" y="660" font-size="10" fill="#5b6573" font-weight="normal" text-anchor="start">NEU, ZUWEISUNG, OFFEN</text>
+<rect x="890" y="602" width="186" height="76" rx="8" fill="#fff" stroke="#7a8796" stroke-width="1.5" />
+<text x="900" y="624" font-size="12.5" fill="#1b1f24" font-weight="bold" text-anchor="start">⚠  Fehlerbericht</text>
+<text x="900" y="642" font-size="11" fill="#1a5fb4" font-weight="normal" text-anchor="start">/fehler</text>
+<text x="900" y="660" font-size="10" fill="#5b6573" font-weight="normal" text-anchor="start">Zwischenablage, Datei, Mail</text>
+<rect x="696" y="685" width="186" height="76" rx="8" fill="#fff" stroke="#7a8796" stroke-width="1.5" />
+<text x="706" y="707" font-size="12.5" fill="#1b1f24" font-weight="bold" text-anchor="start">Manuelle Frequenz</text>
+<text x="706" y="725" font-size="11" fill="#1a5fb4" font-weight="normal" text-anchor="start">/manuell</text>
+<text x="706" y="743" font-size="10" fill="#5b6573" font-weight="normal" text-anchor="start">beliebige QRG auf einen Stick</text>
+<rect x="890" y="685" width="186" height="76" rx="8" fill="#fff" stroke="#7a8796" stroke-width="1.5" />
+<text x="900" y="707" font-size="12.5" fill="#1b1f24" font-weight="bold" text-anchor="start">Status / API</text>
+<text x="900" y="725" font-size="11" fill="#1a5fb4" font-weight="normal" text-anchor="start">/status, /api/v1/…</text>
+<text x="900" y="743" font-size="10" fill="#5b6573" font-weight="normal" text-anchor="start">JSON, Playlist /qo100.m3u</text>
+<text x="1130" y="62" font-size="15" fill="#1f5fa8" font-weight="bold" text-anchor="start">3  Client (PC / Notebook / Handy)</text>
+<rect x="1130" y="72" width="560" height="410" rx="10" fill="#fff" stroke="#46556a" stroke-width="2" />
+<text x="1146" y="98" font-size="16" fill="#1b1f24" font-weight="bold" text-anchor="start">MultiPlayer  (multiplayer.py, Tk)</text>
+<rect x="1146" y="110" width="76" height="22" rx="11" fill="#fff" stroke="#9aa5b1" stroke-width="1" />
+<text x="1184" y="125" font-size="11" fill="#1b1f24" font-weight="normal" text-anchor="middle">Start</text>
+<rect x="1228" y="110" width="76" height="22" rx="11" fill="#fff" stroke="#9aa5b1" stroke-width="1" />
+<text x="1266" y="125" font-size="11" fill="#1b1f24" font-weight="normal" text-anchor="middle">ShowAll</text>
+<rect x="1310" y="110" width="76" height="22" rx="11" fill="#fff" stroke="#9aa5b1" stroke-width="1" />
+<text x="1348" y="125" font-size="11" fill="#1b1f24" font-weight="normal" text-anchor="middle">MuteAll</text>
+<rect x="1392" y="110" width="76" height="22" rx="11" fill="#fff" stroke="#9aa5b1" stroke-width="1" />
+<text x="1430" y="125" font-size="11" fill="#1b1f24" font-weight="normal" text-anchor="middle">Quad</text>
+<rect x="1474" y="110" width="76" height="22" rx="11" fill="#fff" stroke="#9aa5b1" stroke-width="1" />
+<text x="1512" y="125" font-size="11" fill="#1b1f24" font-weight="normal" text-anchor="middle">Fehlerbericht</text>
+<rect x="1146" y="148" width="168" height="138" rx="6" fill="#14171a" stroke="#f08a00" stroke-width="3" />
+<rect x="1154" y="156" width="152" height="82" rx="3" fill="#22313f" stroke="none" stroke-width="0" />
+<text x="1230" y="202" font-size="12" fill="#9aa5b1" font-weight="normal" text-anchor="middle">Videobild</text>
+<text x="1156" y="256" font-size="12" fill="#fff" font-weight="bold" text-anchor="start">VLC RTL1</text>
+<text x="1156" y="274" font-size="10" fill="#9aa5b1" font-weight="normal" text-anchor="start">udp://@230.0.0.30:1234</text>
+<rect x="1324" y="148" width="168" height="138" rx="6" fill="#14171a" stroke="#2a7be4" stroke-width="3" />
+<rect x="1332" y="156" width="152" height="82" rx="3" fill="#22313f" stroke="none" stroke-width="0" />
+<text x="1408" y="202" font-size="12" fill="#9aa5b1" font-weight="normal" text-anchor="middle">Videobild</text>
+<text x="1334" y="256" font-size="12" fill="#fff" font-weight="bold" text-anchor="start">VLC RTL2</text>
+<text x="1334" y="274" font-size="10" fill="#9aa5b1" font-weight="normal" text-anchor="start">udp://@230.0.0.31:1234</text>
+<rect x="1502" y="148" width="168" height="138" rx="6" fill="#14171a" stroke="#8e44ad" stroke-width="3" />
+<rect x="1510" y="156" width="152" height="82" rx="3" fill="#22313f" stroke="none" stroke-width="0" />
+<text x="1586" y="202" font-size="12" fill="#9aa5b1" font-weight="normal" text-anchor="middle">Videobild</text>
+<text x="1512" y="256" font-size="12" fill="#fff" font-weight="bold" text-anchor="start">VLC RTL3</text>
+<text x="1512" y="274" font-size="10" fill="#9aa5b1" font-weight="normal" text-anchor="start">udp://@230.0.0.32:1234</text>
+<rect x="1146" y="298" width="168" height="138" rx="6" fill="#14171a" stroke="#16a085" stroke-width="3" />
+<rect x="1154" y="306" width="152" height="82" rx="3" fill="#22313f" stroke="none" stroke-width="0" />
+<text x="1230" y="352" font-size="12" fill="#9aa5b1" font-weight="normal" text-anchor="middle">Videobild</text>
+<text x="1156" y="406" font-size="12" fill="#fff" font-weight="bold" text-anchor="start">VLC RTL4</text>
+<text x="1156" y="424" font-size="10" fill="#9aa5b1" font-weight="normal" text-anchor="start">udp://@230.0.0.33:1234</text>
+<rect x="1324" y="298" width="168" height="138" rx="6" fill="#14171a" stroke="#c0392b" stroke-width="3" />
+<rect x="1332" y="306" width="152" height="82" rx="3" fill="#22313f" stroke="none" stroke-width="0" />
+<text x="1408" y="352" font-size="12" fill="#9aa5b1" font-weight="normal" text-anchor="middle">Videobild</text>
+<text x="1334" y="406" font-size="12" fill="#fff" font-weight="bold" text-anchor="start">VLC RTL5</text>
+<text x="1334" y="424" font-size="10" fill="#9aa5b1" font-weight="normal" text-anchor="start">udp://@230.0.0.34:1234</text>
+<rect x="1502" y="298" width="168" height="138" rx="6" fill="#14171a" stroke="#6b7b8c" stroke-width="3" />
+<rect x="1510" y="306" width="152" height="82" rx="3" fill="#22313f" stroke="none" stroke-width="0" />
+<text x="1586" y="352" font-size="12" fill="#9aa5b1" font-weight="normal" text-anchor="middle">Videobild</text>
+<text x="1512" y="406" font-size="12" fill="#fff" font-weight="bold" text-anchor="start">VLC RTL6</text>
+<text x="1512" y="424" font-size="10" fill="#9aa5b1" font-weight="normal" text-anchor="start">udp://@230.0.0.35:1234</text>
+<text x="1146" y="462" font-size="11" fill="#5b6573" font-weight="normal" text-anchor="start">ein Player je Stick, Neustart bei Signalwechsel; Zeile grau = Stick hängt am Pi-Monitor</text>
+<rect x="1130" y="498" width="560" height="120" rx="10" fill="#fff" stroke="#46556a" stroke-width="2" />
+<text x="1146" y="524" font-size="15" fill="#1b1f24" font-weight="bold" text-anchor="start">leandvb-GUI (Tuner Switcher)</text>
+<text x="1146" y="546" font-size="12" fill="#1b1f24" font-weight="normal" text-anchor="start">Pi-Sticks als datvRX-Tunerspalten, Profile, Prioritäten, LO-Abgleich</text>
+<text x="1146" y="566" font-size="12" fill="#1b1f24" font-weight="normal" text-anchor="start">schaltet die Verteilfunktion des Pi aus (API /api/v1/verteiler)</text>
+<text x="1146" y="586" font-size="12" fill="#1b1f24" font-weight="normal" text-anchor="start">steuert die Sticks über dienst_client.py (HTTP :8554)</text>
+<rect x="1130" y="634" width="560" height="100" rx="10" fill="#fff" stroke="#46556a" stroke-width="2" />
+<text x="1146" y="660" font-size="15" fill="#1b1f24" font-weight="bold" text-anchor="start">Handy / Tablet / anderer PC</text>
+<text x="1146" y="682" font-size="12" fill="#1b1f24" font-weight="normal" text-anchor="start">VLC mit Playlist http://&lt;Pi&gt;:8554/qo100.m3u (Taste «nächstes»)</text>
+<text x="1146" y="702" font-size="12" fill="#1b1f24" font-weight="normal" text-anchor="start">oder Handy-Seite :8555, direkter Stream http://&lt;Pi&gt;:8554/z/&lt;MHz&gt;/&lt;kS&gt;</text>
+<text x="1146" y="722" font-size="12" fill="#1b1f24" font-weight="normal" text-anchor="start">Browser am PC: Hauptmaske, Protokoll, Einstellungen</text>
+<line x1="490" y1="600" x2="530" y2="330" stroke="#46556a" stroke-width="2.5" marker-end="url(#ah)" />
+<text x="500" y="470" font-size="10" fill="#1b1f24" font-weight="normal" text-anchor="start"></text>
+<line x1="1080" y1="250" x2="1130" y2="250" stroke="#46556a" stroke-width="2.5" marker-end="url(#ah)" />
+<text x="1105" y="285" font-size="10" fill="#46556a" font-weight="bold" text-anchor="middle">HTTP</text>
+<line x1="1080" y1="580" x2="1130" y2="560" stroke="#46556a" stroke-width="2.5" marker-end="url(#ah)" />
+<line x1="1080" y1="690" x2="1130" y2="690" stroke="#46556a" stroke-width="2.5" marker-end="url(#ah)" />
+<line x1="490" y1="830" x2="1100" y2="830" stroke="#d9534f" stroke-width="3.5" marker-end="url(#ah)" />
+<line x1="1100" y1="830" x2="1100" y2="480" stroke="#d9534f" stroke-width="3.5" marker-end="url(#ah)" />
+<line x1="1100" y1="480" x2="1130" y2="480" stroke="#d9534f" stroke-width="3.5" marker-end="url(#ah)" />
+<text x="500" y="818" font-size="13" fill="#c0392b" font-weight="bold" text-anchor="start">UDP-Multicast: ein Transportstrom je Stick (230.0.0.30 … 35 : 1234)</text>
+<text x="500" y="856" font-size="12" fill="#5b6573" font-weight="normal" text-anchor="start">rot = Videostrom (UDP) · grau = Steuerung und Anzeige (HTTP/JSON, Ports 8554 / 8555)</text>
+</svg>

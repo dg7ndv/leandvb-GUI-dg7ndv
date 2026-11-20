@@ -1,0 +1,59 @@
+diff --git a/app/platform/remote_api_app.cpp b/app/platform/remote_api_app.cpp
+index abdaa603..278acdc7 100644
+--- a/app/platform/remote_api_app.cpp
++++ b/app/platform/remote_api_app.cpp
+@@ -116,6 +116,54 @@ struct Host : RemoteApiHost {
+             return o + b;
+         });
+     }
++    // leandvb-GUI (DG7NDV): UDP-Ausgabe per API - GET /api/v1/x/udp, POST /api/v1/x/udp {"on":true,"host":"230.0.0.11","port":1234,"ttl":1}
++    // (sonst nur per Haken "stream" im Tab Stream/Outputs schaltbar; der wird nicht gespeichert)
++    int handleExtra(const std::string& method, const std::string& path, const std::map<std::string, JsonVal>& body, std::string& json) override {
++        if (path == "/api/v1/x/agc") {   // leandvb-GUI: AGC an/aus - POST {"on":true}, GET -> {"on":...}
++            if (method == "POST") {
++                auto it = body.find("on");
++                if (it == body.end() || it->second.kind != JsonVal::Bool) { json = "body needs \"on\": true|false"; return 400; }
++                const bool on = it->second.b;
++                std::string err;
++                if (!run([on](App& a, std::string&) { a.agcOn = on; if (on) agcReset(a); return true; }, err)) { json = err; return 400; }
++            } else if (method != "GET") { json = "use GET or POST"; return 405; }
++            json = query([](App& a) { return std::string("{\"on\":") + (a.agcOn ? "true" : "false") + "}"; });
++            return 200;
++        }
++        if (path != "/api/v1/x/udp") return 0;
++        if (method == "POST") {
++            std::string err;
++            const bool ok = run([&body](App& a, std::string& e) {
++                auto it = body.find("host");
++                if (it != body.end() && it->second.kind == JsonVal::Str) {
++                    if (it->second.str.empty() || it->second.str.size() >= sizeof a.udpHost) { e = "bad host"; return false; }
++                    snprintf(a.udpHost, sizeof a.udpHost, "%s", it->second.str.c_str());
++                }
++                it = body.find("port");
++                if (it != body.end() && it->second.kind == JsonVal::Num) {
++                    if (it->second.num < 1 || it->second.num > 65535) { e = "bad port"; return false; }
++                    a.out.port = (int)it->second.num;
++                }
++                it = body.find("ttl");
++                if (it != body.end() && it->second.kind == JsonVal::Num) a.out.ttl = (int)it->second.num;
++                it = body.find("on");
++                if (it != body.end() && it->second.kind == JsonVal::Bool) a.out.udp = it->second.b;
++                applyOutputs(a);
++                return true;
++            }, err);
++            if (!ok) { json = err; return 400; }
++        } else if (method != "GET") {
++            json = "use GET or POST";
++            return 405;
++        }
++        json = query([](App& a) {
++            const OutputStats os = a.engine.outputStats();
++            return std::string("{\"on\":") + (a.out.udp ? "true" : "false") + ",\"host\":\"" + jsonEscape(a.udpHost) + "\",\"port\":" +
++                   std::to_string(a.out.port) + ",\"ttl\":" + std::to_string(a.out.ttl) + ",\"open\":" + (os.udpOpen ? "true" : "false") +
++                   ",\"datagrams\":" + std::to_string((unsigned long long)os.udpDatagrams) + "}";
++        });
++        return 200;
++    }
+     std::string devicesJson() override {
+         return query([](App& a) {
+             std::string o = "[";

@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1500 470" width="100%" font-family="DejaVu Sans, Arial, sans-serif" role="img" aria-label="Ein Raspberry Pi 5 mit 1 bis 4 (bis 10) RTL-SDR-Sticks">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#46556a"/></marker></defs>
+<rect x="0" y="0" width="1500" height="470" rx="12" fill="#f7f9fb" stroke="#d3d9e0" stroke-width="1.5"/>
+<text x="20" y="30" font-size="18" fill="#1b1f24" font-weight="bold" text-anchor="start">Ein Raspberry Pi 5 – 1 bis 4 RTL-SDR-Sticks (bis 10 mit Hub und genug Rechenleistung)</text>
+<rect x="20" y="50" width="250" height="266" rx="12" fill="#eaf1f8" stroke="#46556a" stroke-width="2"/>
+<text x="34" y="74" font-size="14" fill="#1f5fa8" font-weight="bold" text-anchor="start">Raspberry Pi 5 – datv-rx</text>
+<text x="34" y="92" font-size="11" fill="#5b6573" font-weight="normal" text-anchor="start">Dienst datvrx-dienst (1 Stick)</text>
+<rect x="34" y="102" width="222" height="28" rx="8" fill="#fff7e0" stroke="#c9a227" stroke-width="1.5"/>
+<text x="145" y="121" font-size="11" fill="#1b1f24" font-weight="normal" text-anchor="middle">LNB → Splitter → je Stick ein Koax</text>
+<rect x="34" y="146" width="222" height="48" rx="8" fill="#f08a00" stroke="#222" stroke-width="1.5"/>
+<text x="44" y="166" font-size="15" fill="#fff" font-weight="bold" text-anchor="start">RTL1</text>
+<text x="44" y="184" font-size="10.5" fill="#fff" font-weight="normal" text-anchor="start">UDP 230.0.0.30:1234</text>
+<rect x="34" y="202" width="222" height="30" rx="8" fill="#dfe6ee" stroke="#46556a" stroke-width="1.5"/>
+<text x="145" y="222" font-size="11" fill="#1b1f24" font-weight="normal" text-anchor="middle">USB direkt oder Hub</text>
+<text x="145" y="254" font-size="10.5" fill="#5b6573" font-weight="normal" text-anchor="middle">1 Stick: eine Frequenz</text>
+<rect x="294" y="50" width="330" height="266" rx="12" fill="#eaf1f8" stroke="#46556a" stroke-width="2"/>
+<text x="308" y="74" font-size="14" fill="#1f5fa8" font-weight="bold" text-anchor="start">Raspberry Pi 5 – datv-rx</text>
+<text x="308" y="92" font-size="11" fill="#5b6573" font-weight="normal" text-anchor="start">Dienst datvrx-dienst (2 Sticks)</text>
+<rect x="308" y="102" width="302" height="28" rx="8" fill="#fff7e0" stroke="#c9a227" stroke-width="1.5"/>
+<text x="459" y="121" font-size="11" fill="#1b1f24" font-weight="normal" text-anchor="middle">LNB → Splitter → je Stick ein Koax</text>
+<rect x="308" y="146" width="146" height="48" rx="8" fill="#f08a00" stroke="#222" stroke-width="1.5"/>
+<text x="318" y="166" font-size="15" fill="#fff" font-weight="bold" text-anchor="start">RTL1</text>
+<text x="318" y="184" font-size="10.5" fill="#fff" font-weight="normal" text-anchor="start">UDP 230.0.0.30:1234</text>
+<rect x="464" y="146" width="146" height="48" rx="8" fill="#2a7be4" stroke="#222" stroke-width="1.5"/>
+<text x="474" y="166" font-size="15" fill="#fff" font-weight="bold" text-anchor="start">RTL2</text>
+<text x="474" y="184" font-size="10.5" fill="#fff" font-weight="normal" text-anchor="start">UDP 230.0.0.31:1234</text>
+<rect x="308" y="202" width="302" height="30" rx="8" fill="#dfe6ee" stroke="#46556a" stroke-width="1.5"/>
+<text x="459" y="222" font-size="11" fill="#1b1f24" font-weight="normal" text-anchor="middle">aktiver USB-3-Hub (eigene 5 V)</text>
+<text x="459" y="254" font-size="10.5" fill="#5b6573" font-weight="normal" text-anchor="middle">2 Sticks: Bake + Signal</text>
+<rect x="648" y="50" width="330" height="322" rx="12" fill="#eaf1f8" stroke="#46556a" stroke-width="2"/>
+<text x="662" y="74" font-size="14" fill="#1f5fa8" font-weight="bold" text-anchor="start">Raspberry Pi 5 – datv-rx</text>
+<text x="662" y="92" font-size="11" fill="#5b6573" font-weight="normal" text-anchor="start">Dienst datvrx-dienst (4 Sticks)</text>
+<rect x="662" y="102" width="302" height="28" rx="8" fill="#fff7e0" stroke="#c9a227" stroke-width="1.5"/>
+<text x="813" y="121" font-size="11" fill="#1b1f24" font-weight="normal" text-anchor="middle">LNB → Splitter → je Stick ein Koax</text>
+<rect x="662" y="146" width="146" height="48" rx="8" fill="#f08a00" stroke="#222" stroke-width="1.5"/>
+<text x="672" y="166" font-size="15" fill="#fff" font-weight="bold" text-anchor="start">RTL1</text>
+<text x="672" y="184" font-size="10.5" fill="#fff" font-weight="normal" text-anchor="start">UDP 230.0.0.30:1234</text>
+<rect x="818" y="146" width="146" height="48" rx="8" fill="#2a7be4" stroke="#222" stroke-width="1.5"/>
+<text x="828" y="166" font-size="15" fill="#fff" font-weight="bold" text-anchor="start">RTL2</text>
+<text x="828" y="184" font-size="10.5" fill="#fff" font-weight="normal" text-anchor="start">UDP 230.0.0.31:1234</text>
+<rect x="662" y="202" width="146" height="48" rx="8" fill="#8e44ad" stroke="#222" stroke-width="1.5"/>
+<text x="672" y="222" font-size="15" fill="#fff" font-weight="bold" text-anchor="start">RTL3</text>
+<text x="672" y="240" font-size="10.5" fill="#fff" font-weight="normal" text-anchor="start">UDP 230.0.0.32:1234</text>
+<rect x="818" y="202" width="146" height="48" rx="8" fill="#16a085" stroke="#222" stroke-width="1.5"/>
+<text x="828" y="222" font-size="15" fill="#fff" font-weight="bold" text-anchor="start">RTL4</text>
+<text x="828" y="240" font-size="10.5" fill="#fff" font-weight="normal" text-anchor="start">UDP 230.0.0.33:1234</text>
+<rect x="662" y="258" width="302" height="30" rx="8" fill="#dfe6ee" stroke="#46556a" stroke-width="1.5"/>
+<text x="813" y="278" font-size="11" fill="#1b1f24" font-weight="normal" text-anchor="middle">aktiver USB-3-Hub (eigene 5 V)</text>
+<text x="813" y="310" font-size="10.5" fill="#5b6573" font-weight="normal" text-anchor="middle">4 Sticks: Standard</text>
+<rect x="1002" y="50" width="478" height="330" rx="12" fill="#fff" stroke="#1f7a3a" stroke-width="2"/>
+<text x="1016" y="76" font-size="14" fill="#1f7a3a" font-weight="bold" text-anchor="start">Dienst auf dem Pi</text>
+<text x="1016" y="104" font-size="12" fill="#1b1f24" font-weight="normal" text-anchor="start">• sucht &amp; dekodiert alle Signale</text>
+<text x="1016" y="128" font-size="12" fill="#1b1f24" font-weight="normal" text-anchor="start">• Rufzeichen, MER, Pegel, Bitrate</text>
+<text x="1016" y="152" font-size="12" fill="#1b1f24" font-weight="normal" text-anchor="start">• Autoverteiler: Signal → freier Stick</text>
+<text x="1016" y="176" font-size="12" fill="#1b1f24" font-weight="normal" text-anchor="start">• Web-Interface :8554, JSON-API, MQTT</text>
+<text x="1016" y="200" font-size="12" fill="#1b1f24" font-weight="normal" text-anchor="start">• je Stick ein UDP-Multicast-Strom</text>
+<text x="1016" y="224" font-size="12" fill="#1b1f24" font-weight="normal" text-anchor="start">• Clients: MultiPlayer, leandvb-GUI, VLC</text>
+<text x="20" y="440" font-size="12" fill="#5b6573" font-weight="normal" text-anchor="start">Je weiterer Stick eine eigene UDP-Adresse (Basisadresse + Stick-Nr.). Mit "Pi 5" ist Echtzeit-Empfang gemessen (Faktor 0,29 bei der Bake), Pi 4 ist zu langsam.</text>
+</svg>

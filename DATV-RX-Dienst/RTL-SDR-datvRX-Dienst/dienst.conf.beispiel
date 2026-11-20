@@ -1,0 +1,48 @@
+# dienst.conf - Konfiguration des RTL-SDR-datvRX-Dienstes (datvrx_dienst.py)
+# Diese Datei als "dienst.conf" neben das Programm legen und anpassen. Die Kommandozeile hat Vorrang vor dieser Datei.
+# Leere oder fehlende Werte = Standard. Kommentare mit # oder ; (auch hinter einem Wert).
+[dienst]
+
+# --- Empfang (LNB und RTL-Stick dieses Standorts) -----------------------------------------------------------
+lo_mhz = 9540.054                  # Oszillator des LNB in MHz (Standard: lnb_lo aus ~/.leandvb-GUI/parameters.json, sonst 9540)
+ppm = 0                            # Frequenzkorrektur des RTL-Sticks in ppm (Standard: ppm aus parameters.json, sonst 0)
+verstaerkung_db = 40               # Tuner-Verstaerkung des RTL-Sticks in dB
+sticks =                           # auto = beim Start alle RTL-Sticks am USB-Bus suchen (bis 10; stick_nr bleibt RTL1), oder Liste 'dg7ndv01,stx:978:25'; leer = nur stick_nr/stick2_nr
+stick2_nr =                        # zweiter Stick (RTL2): Nummer oder Seriennummer; leer = nur ein Stick. Jeder Stick bekommt eine eigene Bake-Pruefung.
+stick_nr =                         # Nummer (rtl_sdr -d) oder SERIENNUMMER des Sticks (stabil bei geaenderter USB-Reihenfolge; nicht rein numerisch), leer = 0
+
+# --- Bake-Pruefung beim Start -------------------------------------------------------------------------------
+# Beim Start wird zuerst die Bake (10491,5 MHz) mit diesem LO gesucht. Gelockt: die Ablage der Bake ergibt die Frequenzkorrektur (LO).
+# Nicht gelockt: Fehlermeldung auf der Webseite, kein Scan.
+bake_sekunden_je_versuch = 25      # Wartezeit je Versuch (3 Versuche)
+
+# --- Scan ---------------------------------------------------------------------------------------------------
+auto_scan = ja                     # ja/nein: Auto-Scan beim ersten Start (danach gilt der Schalter auf der Webseite)
+scan_sekunden_je_signal = 28       # Hoechstdauer je Signal beim Scan
+stick_frei_nach_sekunden = 60      # Stick freigeben, wenn so lange kein Zuschauer verbunden ist
+
+# --- Spektrum-Ersatz (wenn der BATC-Server ausfaellt) ---------------------------------------------------------
+# Ein freier RTL-Stick kann das Band 10490,5-10499,5 MHz selbst abtasten (2,4-MHz-Portionen, zusammengesetzt zu 922 Punkten).
+# Dazu den Spektrum-Server von HB9IIU (Repo QO100-RASPI-RECEIVER, GPLv3, Ordner rtl-sdr-server-source) selbst auf den Pi klonen
+# (Python: numpy, pyrtlsdr, websockets) und den Ordner hier eintragen. Auswahl auf der Webseite: Spektrum -> Quelle (Auto/BATC/Stick).
+spektrum_server =                  # Ordner mit main_lo9540.py oder main.py; leer = kein Stick-Scan
+spektrum_korr_khz = 0              # Frequenzkorrektur des Stick-Scans in kHz (Messung: main_lo9540.py --measure-offset)
+spektrum_port = 7681               # lokaler WebSocket-Port des Servers
+
+# --- Netzwerk -----------------------------------------------------------------------------------------------
+http_port = 8554                   # Webseite, Playlist /qo100.m3u und HTTP-Stream (VLC)
+multicast = 230.0.0.30             # UDP-Multicast-Adresse von RTL1 (230.0.0.30, nicht .20: der Tesla-Switcher nutzt .20)
+multicast2 =                       # Adresse von RTL2; leer = Adresse von RTL1, letzte Stelle + 1 (230.0.0.31)
+multicast_port = 1234
+multicast_auto = ja                # ja: per MQTT (qo100/udp/<Host>) pruefen, ob ein anderer Dienst die Adresse belegt; dann letzte Stelle +10 (30 -> 40 -> 50 ...)
+handy_port = 8555                  # schmale Handy-Seite (Signalliste, Tippen startet VLC) auf eigenem Port; 0 = aus
+
+# --- MQTT (leer = aus) --------------------------------------------------------------------------------------
+mqtt = 192.168.20.10:1883          # Broker HOST[:PORT]; immer der Mosquitto auf dem Hauspi (192.168.20.10)
+mqtt_prefix = qo100/dienst/%h      # %h = Hostname des Pis (je Pi eigene Themen am gemeinsamen Broker); Themen: <prefix>/signal/neu, /signal/weg, /signale, /messung, /bake, /cpu, /online
+
+# --- Webseite -----------------------------------------------------------------------------------------------
+kopfzeile = DG7NDV                 # Name/Rufzeichen in der Kopfzeile der Webseite
+
+# --- Ueberwachung -------------------------------------------------------------------------------------------
+cpu_warnung_prozent = 80           # Warnung im Browser (und MQTT), wenn Rechner oder Programm ueber 20 s darueber liegen

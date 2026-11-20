@@ -1,0 +1,25 @@
+# nicht veroeffentlichen (Liste aus .veroeffentlichen.json "ausschliessen")
+*.log
+*.log.*
+*.csv
+bak/
+__pycache__/
+*.ini
+*.pyc
+zapper_einstellungen.json
+zapper_messwerte.json
+BilderV/
+# datvrx (DATVision) und ARM-Programme gehoeren nicht in dieses Repo
+/datvrx
+/datvrx_rx.sh
+RTL-SDR-datvRX-Dienst/arm/datvrx.*
+RTL-SDR-datvRX-Dienst/arm/dvbstool
+RTL-SDR-datvRX-Dienst/arm64/datvrx.*
+RTL-SDR-datvRX-Dienst/arm64/dvbstool
+RTL-SDR-datvRX-Dienst/dienst.conf
+verteiler_protokoll.log*
+# interne Notizen (Heimatpfade, interne Adressen)
+prog.txt
+programme.txt
+RTL-SDR-datvRX-Dienst/prog.txt
+MQTT_UDP_Abstimmung.md

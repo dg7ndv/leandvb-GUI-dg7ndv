@@ -1,0 +1,33 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 14c50dc..5a2706c 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -116,3 +116,10 @@ if(DATVRX_TOOLS)
+ endif()
+ 
+ install(TARGETS datvrx RUNTIME DESTINATION bin)
++
++# --- local patch for 32-bit ARM userland (armv7): the NEON code of these files is written for AArch64 (vaddvq, vdivq, vqtbl, vpaddq ...);
++#     build them without NEON (generic code path). The DVB-S/S2 filters (dvbs_simd.h, patched shim) and the LDPC decoder keep NEON.
++if(CMAKE_SIZEOF_VOID_P EQUAL 4)
++  set_source_files_properties(core/src/dvbt/dvbt.cpp core/src/t2/t2fec.cpp core/src/fec/fec_proto.cpp core/src/fec/fec_proto_rs.cpp
++    PROPERTIES COMPILE_OPTIONS "-mfpu=vfpv4")
++endif()
+diff --git a/core/src/dvbs/dvbs_simd.h b/core/src/dvbs/dvbs_simd.h
+index b9e49e1..351c0d5 100644
+--- a/core/src/dvbs/dvbs_simd.h
++++ b/core/src/dvbs/dvbs_simd.h
+@@ -5,6 +5,13 @@
+ #if (defined(__ARM_NEON) || defined(__aarch64__)) && !defined(DECT2_NO_SIMD)
+ #include <arm_neon.h>
+ #define DVBS_NEON 1
++#if !defined(__aarch64__)
++// armv7 (32-bit ARM) has NEON but not vaddvq_f32 (AArch64 only): horizontal sum of four lanes with pairwise adds
++static inline float vaddvq_f32(float32x4_t v) {
++    float32x2_t t = vadd_f32(vget_low_f32(v), vget_high_f32(v));
++    return vget_lane_f32(vpadd_f32(t, t), 0);
++}
++#endif
+ #elif defined(__SSE2__) && !defined(DECT2_NO_SIMD)
+ #include <emmintrin.h>
+ #define DVBS_SSE2 1

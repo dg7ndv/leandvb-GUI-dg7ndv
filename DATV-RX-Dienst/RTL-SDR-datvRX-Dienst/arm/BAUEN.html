@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>datvrx für den Raspberry Pi bauen</title>
+<style>body{font-family:sans-serif;max-width:56em;margin:2em auto;padding:0 1em;line-height:1.5}code,pre{background:#eee;padding:.1em .3em}pre{padding:.7em;overflow:auto}td,th{border:1px solid #999;padding:.3em .6em;text-align:left}table{border-collapse:collapse}</style></head><body>
+<h1>datvrx für den Raspberry Pi (32-Bit-ARM) bauen</h1>
+<p>Stand 11.11.2026. <code>datvrx</code> (HB9IIU/DATVision, Stand <code>d4d2d79</code> vom 07.11.2026, GPL-3.0; DVB-S/S2-Decoder aus OnAir) ist C++20 (CMake) plus ein Rust-Teil (BCH, Reed-Solomon, TS-Tabellen, ohne externe Pakete). Das <code>datvrx</code> des PCs ist x86 und läuft nicht auf dem Pi.</p>
+<h2>Ergebnis</h2>
+<table><tr><th>Datei</th><th>Zweck</th><th>Selbsttest auf dem Hauspi (Pi 4), 15 s Signal 1 MS/s QPSK 2/3</th></tr>
+<tr><td><code>datvrx.generic</code></td><td>für jeden 32-Bit-ARM-Pi (armv7, hardfp), ohne NEON-Optimierung</td><td>17,8 s (Faktor 1,19; simuliertes Signal)</td></tr>
+<tr><td><code>datvrx.native</code></td><td>für die CPU des Pi 4 gebaut (<code>-march=native</code>, NEON) – wird vom Installationsskript bevorzugt</td><td><b>13,4 s (Faktor 0,89; simuliertes Signal, echte Signale kosten mehr, siehe unten)</b>, Ausgabe bitgleich zur generic-Variante</td></tr>
+<tr><td><code>dvbstool</code></td><td>Testsignal-Generator/Offline-Empfänger des Projekts</td><td>–</td></tr></table>
+<p>Das System des Hauspi ist ein Pi 4 Model B (Cortex-A72, 4 GB), aber mit <b>32-Bit-Userland</b> (Raspbian 11 „Bullseye“, gcc 10, kein C++20-fähiger Compiler). Deshalb wurde in einem Docker-Container gebaut.</p>
+<h2>64-Bit-Pi (Pi 5, Debian 12 Bookworm) – Ordner <code>../arm64/</code></h2>
+<p>Dort wurde direkt gebaut (gcc 12, cmake, Rust per rustup; Skript <code>arm64/build_pi5.sh</code>, statisch gelinkt, kein Patch nötig). Selbsttest mit simuliertem Signal auf dem Pi 5 (P5NDI1): <b>3,5 s für 15 s Signal (Echtzeit-Faktor 0,23)</b>; mit echter Bake 0,29, Ausgabe bitgleich zum Pi 4. <code>datvrx.generic</code> läuft auf jedem 64-Bit-Pi (3/4/5); eine <code>native</code>-Variante bringt auf dem Pi 5 keinen Gewinn und wird nicht verwendet.</p>
+<h2>Vorgehen 32-Bit (Hauspi, im Container, ohne das System zu verändern)</h2>
+<pre>docker run --platform linux/arm/v7 --cpus 2 --oom-score-adj=1000 -v ~/datvrx-dienst/build:/work debian:bookworm bash /work/build_in_container.sh
+docker run ... bash /work/build_native.sh      # schnelle Variante</pre>
+<ul>
+<li><b>build_in_container.sh</b> / <b>build_native.sh</b> (in diesem Ordner): installieren im Container build-essential, cmake, git und Rust (rustup, <code>armv7-unknown-linux-gnueabihf</code>), konfigurieren mit CMake und linken <b>statisch</b> (<code>-static</code>), damit die Datei auf dem alten glibc des Pi läuft. Dauer je Variante etwa 4–5 Minuten.</li>
+<li><b>Der Kernel des Pi hat keine Speicherbegrenzung für Container</b>; deshalb nur 2 Jobs, niedrige Priorität (<code>nice 19</code>) und <code>--oom-score-adj=1000</code>, damit bei Speichermangel zuerst der Bau beendet wird (auf dem Hauspi laufen Zigbee, Node-RED, Mosquitto u. a.).</li>
+<li><b>datvrx-armv7-neon.patch</b> (lokal, am Projekt nötig für 32-Bit-ARM): Der NEON-Code des Projekts ist für AArch64 geschrieben. Ersatz für <code>vaddvq_f32</code> in <code>dvbs_simd.h</code> (DVB-S-Filter, bleibt mit NEON) und DVB-T/T2/FEC-Hilfsdateien ohne NEON (<code>-mfpu=vfpv4</code>, für QO-100 ohne Bedeutung).</li>
+</ul>
+<h2>Selbsttest ohne Funkgerät</h2>
+<pre>dvbstool gen sig.cs8 --secs 15 --rate 2.4 --std s2 --mod qpsk --fec 2/3 --rs 1.0 --roll 0.25 --pilots --snr 6 --cfo -35000 --ts in.ts --format cs8
+datvrx sig.cs8 --rate 2.4 --format cs8 -o out.ts        # erwartet: Träger gefunden, TS lock, Es/N0 ca. 6 dB</pre>
+<p>(<code>in.ts</code>: beliebiges Transportstrom-Video, z. B. mit ffmpeg erzeugt.)</p>
+<h2>Messung mit echten Signalen (11./12.11.2026) – wichtig</h2>
+<p>Das simulierte Testsignal (1 MS/s) unterschätzt den Rechenaufwand echter Signale: bei der Bake um das etwa 1,4-fache, bei schmalen Signalen um das etwa 2,2-fache. Mit <b>derselben Aufnahme</b> der Bake (20 s, 2,88 MS/s, QPSK 4/5, mit Lock) auf beiden Geräten:</p>
+<table><tr><th>Gerät</th><th>Echtzeit-Faktor (unter 1 = schneller als das Signal)</th></tr>
+<tr><td>Pi 5, 64-Bit</td><td><b>0,29</b> – echtzeitfähig</td></tr>
+<tr><td>Pi 4 (Hauspi), 32-Bit-Datei native</td><td>1,07 – <b>grenzwertig, nicht echtzeitfähig</b></td></tr>
+<tr><td>Pi 4 (Hauspi), 64-Bit-Datei</td><td>0,99 – grenzwertig, keine Reserve</td></tr></table>
+<p>500-kS-Signal (QPSK 5/6, 2,4 MS/s) auf dem Pi 4: Faktor 1,65 (32-Bit) bzw. 1,26 (64-Bit). Der Pi 4 war dabei zu über 90 % frei (Zigbee, Node-RED, influxdb u. a. zusammen unter 10 % eines Kerns). <code>datvrx</code> rechnet die Empfangskette in einem Thread, nur LDPC läuft auf Hilfs-Threads; <code>DECT2_THREADS</code> ändert nichts. Im Live-Betrieb verwirft <code>datvrx</code> bei Überlastung Daten (am Pi 4 nur 0,05–0,19 Mbit/s statt 0,7–2,4 Mbit/s). <b>Folgerung: Auf dem Pi 4 ist kein sicherer Echtzeitempfang möglich (Bake grenzwertig, schmale Signale zu langsam), ein Pi 5 ist nötig.</b> Korrigiert: erste Fassung gab die Bake-Werte wegen einer falschen Aufnahmedauer doppelt so hoch an. Details: <code>../ANLEITUNG.html#testergebnis</code>.</p>
+<p><b>Korrektur früherer Zahlen:</b> Die ersten Pi-4-Werte (0,74 und 0,89 mit dem simulierten Testsignal) unterschätzten den Aufwand echter Signale (Bake um das etwa 1,4-fache, schmale Signale um das etwa 2,2-fache). Ausführliches Testergebnis mit Verbrauchsübersicht des Hauspi: <code>../ANLEITUNG.html#testergebnis</code>.</p>
+<h2>Grenzen</h2>
+<ul><li>Auf dem Pi 4 ist <code>datvrx</code> mit echten QO-100-Signalen nicht sicher in Echtzeit: die Bake ist grenzwertig (Faktor etwa 1,0), das 500-kS-Signal zu langsam (1,26–1,65, siehe oben); die Aussage „schmale Signale sind unproblematisch“ aus dem ersten Selbsttest stimmte nicht.</li>
+<li>Ein Pi 3 oder älter rechnet deutlich langsamer; die <code>native</code>-Datei läuft dort nur, wenn die CPU dieselben Befehle kennt (das Installationsskript prüft das und fällt sonst auf <code>generic</code> zurück).</li></ul>
+</body></html>

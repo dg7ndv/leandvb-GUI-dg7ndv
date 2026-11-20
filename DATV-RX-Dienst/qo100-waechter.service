@@ -1,0 +1,14 @@
+[Unit]
+Description=QO-100 Waechter (BATC-Spektrum -> MQTT) DG7NDV
+After=network-online.target docker.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=pi
+ExecStart=/usr/bin/python3 /home/pi/waechter_mqtt/waechter_mqtt.py --broker 127.0.0.1 --quiet
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1500 770" width="100%" font-family="DejaVu Sans, Arial, sans-serif" role="img" aria-label="Zwei Raspberry Pi 5 mit Dienst, MQTT-Broker und MultiPlayer-Client">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#46556a"/></marker></defs>
+<rect x="0" y="0" width="1500" height="770" rx="12" fill="#f7f9fb" stroke="#d3d9e0" stroke-width="1.5"/>
+<text x="20" y="30" font-size="18" fill="#1b1f24" font-weight="bold" text-anchor="start">Mehrere Pis: jeder Pi meldet seine UDP-Basisadresse per MQTT – der Client findet alle</text>
+<rect x="20" y="60" width="340" height="322" rx="12" fill="#eaf1f8" stroke="#46556a" stroke-width="2"/>
+<text x="34" y="84" font-size="14" fill="#1f5fa8" font-weight="bold" text-anchor="start">Raspberry Pi 5 – datv-rx (.175)</text>
+<text x="34" y="102" font-size="11" fill="#5b6573" font-weight="normal" text-anchor="start">Dienst datvrx-dienst (4 Sticks)</text>
+<rect x="34" y="112" width="312" height="28" rx="8" fill="#fff7e0" stroke="#c9a227" stroke-width="1.5"/>
+<text x="190" y="131" font-size="11" fill="#1b1f24" font-weight="normal" text-anchor="middle">LNB → Splitter → je Stick ein Koax</text>
+<rect x="34" y="156" width="151" height="48" rx="8" fill="#f08a00" stroke="#222" stroke-width="1.5"/>
+<text x="44" y="176" font-size="15" fill="#fff" font-weight="bold" text-anchor="start">RTL1</text>
+<text x="44" y="194" font-size="10.5" fill="#fff" font-weight="normal" text-anchor="start">UDP 230.0.0.40:1234</text>
+<rect x="195" y="156" width="151" height="48" rx="8" fill="#2a7be4" stroke="#222" stroke-width="1.5"/>
+<text x="205" y="176" font-size="15" fill="#fff" font-weight="bold" text-anchor="start">RTL2</text>
+<text x="205" y="194" font-size="10.5" fill="#fff" font-weight="normal" text-anchor="start">UDP 230.0.0.41:1234</text>
+<rect x="34" y="212" width="151" height="48" rx="8" fill="#8e44ad" stroke="#222" stroke-width="1.5"/>
+<text x="44" y="232" font-size="15" fill="#fff" font-weight="bold" text-anchor="start">RTL3</text>
+<text x="44" y="250" font-size="10.5" fill="#fff" font-weight="normal" text-anchor="start">UDP 230.0.0.42:1234</text>
+<rect x="195" y="212" width="151" height="48" rx="8" fill="#16a085" stroke="#222" stroke-width="1.5"/>
+<text x="205" y="232" font-size="15" fill="#fff" font-weight="bold" text-anchor="start">RTL4</text>
+<text x="205" y="250" font-size="10.5" fill="#fff" font-weight="normal" text-anchor="start">UDP 230.0.0.43:1234</text>
+<rect x="34" y="268" width="312" height="30" rx="8" fill="#dfe6ee" stroke="#46556a" stroke-width="1.5"/>
+<text x="190" y="288" font-size="11" fill="#1b1f24" font-weight="normal" text-anchor="middle">aktiver USB-3-Hub (eigene 5 V)</text>
+<text x="190" y="320" font-size="10.5" fill="#5b6573" font-weight="normal" text-anchor="middle">UDP-Basis 230.0.0.40 (frei gewaehlt)</text>
+<rect x="20" y="410" width="340" height="266" rx="12" fill="#eaf1f8" stroke="#46556a" stroke-width="2"/>
+<text x="34" y="434" font-size="14" fill="#1f5fa8" font-weight="bold" text-anchor="start">Raspberry Pi 5 – P5NDI1 (.102)</text>
+<text x="34" y="452" font-size="11" fill="#5b6573" font-weight="normal" text-anchor="start">Dienst datvrx-dienst (2 Sticks)</text>
+<rect x="34" y="462" width="312" height="28" rx="8" fill="#fff7e0" stroke="#c9a227" stroke-width="1.5"/>
+<text x="190" y="481" font-size="11" fill="#1b1f24" font-weight="normal" text-anchor="middle">LNB → Splitter → je Stick ein Koax</text>
+<rect x="34" y="506" width="151" height="48" rx="8" fill="#f08a00" stroke="#222" stroke-width="1.5"/>
+<text x="44" y="526" font-size="15" fill="#fff" font-weight="bold" text-anchor="start">RTL1</text>
+<text x="44" y="544" font-size="10.5" fill="#fff" font-weight="normal" text-anchor="start">UDP 230.0.0.30:1234</text>
+<rect x="195" y="506" width="151" height="48" rx="8" fill="#2a7be4" stroke="#222" stroke-width="1.5"/>
+<text x="205" y="526" font-size="15" fill="#fff" font-weight="bold" text-anchor="start">RTL2</text>
+<text x="205" y="544" font-size="10.5" fill="#fff" font-weight="normal" text-anchor="start">UDP 230.0.0.31:1234</text>
+<rect x="34" y="562" width="312" height="30" rx="8" fill="#dfe6ee" stroke="#46556a" stroke-width="1.5"/>
+<text x="190" y="582" font-size="11" fill="#1b1f24" font-weight="normal" text-anchor="middle">aktiver USB-3-Hub (eigene 5 V)</text>
+<text x="190" y="614" font-size="10.5" fill="#5b6573" font-weight="normal" text-anchor="middle">UDP-Basis 230.0.0.30</text>
+<rect x="560" y="60" width="360" height="150" rx="12" fill="#fff" stroke="#7a4fb0" stroke-width="2"/>
+<text x="740" y="88" font-size="15" fill="#7a4fb0" font-weight="bold" text-anchor="middle">MQTT-Broker (optional)</text>
+<text x="576" y="116" font-size="11.5" fill="#1b1f24" font-weight="normal" text-anchor="start">qo100/udp/datv-rx = {basis 230.0.0.40, ip, http}</text>
+<text x="576" y="138" font-size="11.5" fill="#1b1f24" font-weight="normal" text-anchor="start">qo100/udp/P5NDI1 = {basis 230.0.0.30, ip, http}</text>
+<text x="576" y="160" font-size="11.5" fill="#1b1f24" font-weight="normal" text-anchor="start">Neuer Pi fragt qo100/udp/+ und nimmt</text>
+<text x="576" y="182" font-size="11.5" fill="#1b1f24" font-weight="normal" text-anchor="start">die naechste freie Basis (30, 40, 50 …)</text>
+<line x1="360" y1="150" x2="560" y2="130" stroke="#7a4fb0" stroke-width="2" marker-end="url(#ah)" stroke-dasharray="6 4"/>
+<line x1="360" y1="480" x2="560" y2="190" stroke="#7a4fb0" stroke-width="2" marker-end="url(#ah)" stroke-dasharray="6 4"/>
+<rect x="1060" y="60" width="420" height="330" rx="12" fill="#fff" stroke="#1f5fa8" stroke-width="2"/>
+<text x="1270" y="90" font-size="15" fill="#1f5fa8" font-weight="bold" text-anchor="middle">PC: MultiPlayer / leandvb-GUI</text>
+<text x="1076" y="122" font-size="12.5" fill="#1b1f24" font-weight="bold" text-anchor="start">Menue "Pis":</text>
+<text x="1090" y="148" font-size="12" fill="#1b1f24" font-weight="normal" text-anchor="start">☑ datv-rx (192.168.20.175:8554)</text>
+<text x="1090" y="170" font-size="12" fill="#1b1f24" font-weight="normal" text-anchor="start">☑ P5NDI1 (192.168.20.102:8554)  [Steuer-Pi]</text>
+<text x="1090" y="192" font-size="12" fill="#1b1f24" font-weight="normal" text-anchor="start">Pi von Hand hinzufuegen …</text>
+<text x="1090" y="214" font-size="12" fill="#1b1f24" font-weight="normal" text-anchor="start">MQTT-Broker: 192.168.20.10 …</text>
+<text x="1090" y="236" font-size="12" fill="#1b1f24" font-weight="normal" text-anchor="start">Jetzt per MQTT suchen</text>
+<text x="1076" y="278" font-size="12" fill="#1b1f24" font-weight="normal" text-anchor="start">Ein Player je Stick:  RTL1@datv-rx … RTL4@datv-rx,</text>
+<text x="1076" y="298" font-size="12" fill="#1b1f24" font-weight="normal" text-anchor="start">RTL1@P5NDI1, RTL2@P5NDI1</text>
+<text x="1076" y="330" font-size="11.5" fill="#5b6573" font-weight="normal" text-anchor="start">Ohne MQTT: Pi-Liste in ~/.multiplayer.json</text>
+<text x="1076" y="350" font-size="11.5" fill="#5b6573" font-weight="normal" text-anchor="start">oder --also HOST[:PORT] / Handeingabe</text>
+<line x1="360" y1="250" x2="1060" y2="250" stroke="#c0392b" stroke-width="2.5" marker-end="url(#ah)" />
+<text x="700" y="242" font-size="12" fill="#c0392b" font-weight="normal" text-anchor="middle">UDP-Multicast-Streams (Video)  230.0.0.40–43 und .30–31</text>
+<line x1="360" y1="550" x2="1060" y2="330" stroke="#c0392b" stroke-width="2.5" marker-end="url(#ah)" />
+<line x1="360" y1="330" x2="1060" y2="280" stroke="#46556a" stroke-width="1.5" marker-end="url(#ah)" stroke-dasharray="3 3"/>
+<text x="760" y="322" font-size="11.5" fill="#46556a" font-weight="normal" text-anchor="middle">HTTP :8554  Status, Steuerung</text>
+</svg>

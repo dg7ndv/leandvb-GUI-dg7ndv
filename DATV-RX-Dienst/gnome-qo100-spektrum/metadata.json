@@ -1,0 +1,7 @@
+{
+  "uuid": "qo100-spektrum@dg7ndv",
+  "name": "QO-100 Spektrum",
+  "description": "Zeigt das QO-100-Wideband-Spektrum (BATC, eshail.batc.org.uk/wb) in der oberen Leiste - nur die Peaks, ohne Rauschen. Klick: grosse Ansicht und Signalliste. Meldet neue Signale (New QRG).",
+  "shell-version": ["48", "49", "50"],
+  "url": "https://eshail.batc.org.uk/wb/"
+}

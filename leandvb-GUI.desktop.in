@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=QO-100 Tuner Switcher
+Comment=leandvb / LongMynd / Octagon GUI (DG7NDV)
+Exec=sh -c 'cd "@DIR@" && python3 leandvb-GUI.py -octagon -longmynd -rtlsdr -conBatc -longmyndp4'
+Icon=@DIR@/leandvb-GUI-icon.png
+Terminal=false
+Categories=HamRadio;AudioVideo;
+StartupWMClass=Leandvb-GUI

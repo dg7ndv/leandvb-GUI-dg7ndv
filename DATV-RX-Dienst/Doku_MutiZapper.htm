@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>QO-100 Multi-Zapper</title>
+<style>body{font-family:system-ui,sans-serif;max-width:52em;margin:2em auto;padding:0 1em;line-height:1.5;color:#1b1f24;background:#f4f6f8}
+h1{margin-bottom:.2em}code{background:#e9e4fb;padding:.1em .35em;border-radius:4px}li{margin:.5em 0}
+a.b{display:inline-block;background:#7c3aed;color:#fff;padding:.6em 1.2em;border-radius:10px;text-decoration:none;font-weight:bold}
+@media (prefers-color-scheme:dark){body{background:#14171a;color:#e8ebef}code{background:#2c2646}}</style></head><body>
+<h1>QO-100 Multi-Zapper</h1>
+<p><a class="b" href="ANLEITUNG.html">&#128214; Dokumentation (Anleitung mit Bild)</a></p>
+<p>QO-100-DATV-Empfang mit mehreren RTL-SDR-Sticks (bis 10) am Raspberry Pi 5.</p>
+<ul>
+<li><b>Dienst</b> (<code>RTL-SDR-datvRX-Dienst/datvrx_dienst.py</code> + <code>zapper.py</code>): scannt und decodiert mit <code>datvrx</code>, verteilt neue Signale automatisch auf freie Sticks, Bake-Offset je Stick, HDMI-Vollbild, BATC-Spektrum, JSON-API, MQTT. Webseite auf Port 8554.</li>
+<li><b>Start:</b> Am Anfang wird bei allen RTL-SDR-Sticks der Offset zur Bake (10491,5&nbsp;MHz) gemessen und gespeichert; ist die gespeicherte Messung noch frisch, wird nicht neu gemessen und die Sticks nehmen sofort Signale an.</li>
+<li><b>Bedienung über das Web-Interface</b> (<code>http://&lt;Pi&gt;:8554/</code>, im Browser am PC oder Handy): Signaltabelle mit Rufzeichen, MER und Pegel, <b>Verteilung</b> der Signale auf die Sticks (Autoverteiler, „neu verteilen“, Stick von Hand zuweisen oder freigeben, Manuelle Frequenz), <b>Player starten</b> per Knopf je Stick (VLC mit UDP-Multicast oder HTTP-Stream), außerdem Bake-Einstellungen, HDMI-Displays, Verteil-Protokoll und Fehlerbericht.</li>
+<li><b>Extra Handy-Webseite</b> (Port 8555): schlanke Seite für Smartphones; ein Antippen startet <b>direkt den VLC-Player am Handy</b> mit dem Stream des Sticks bzw. der Playlist aller Signale.</li>
+<li><b>MultiPlayer</b> (<code>multiplayer.py</code>): Tk-Programm am PC, spielt die Multicast-Streams der Sticks per VLC (ShowAll, MuteAll, Quad, Layouts).</li>
+<li><b>Wächter</b> (<code>qo100_wacht.py</code>, <code>waechter_mqtt.py</code>): meldet neue/verschwundene Signale per MQTT.</li>
+<li>Gemeinsame Module: <code>datv_core.py</code>, <code>dienst_client.py</code>, <code>fehlerbericht.py</code>.</li>
+</ul>
+<p>Installation auf dem Pi: <code>RTL-SDR-datvRX-Dienst/install_dienst_pi.sh</code> (prüft Plattform arm/arm64). Anleitungen: <code>README.html</code>, <code>RTL-SDR-datvRX-Dienst/ANLEITUNG.html</code>.</p>
+<p>Der Empfänger <code>datvrx</code> (Ordner <code>../DATVision</code>) und die vorkompilierten Binaries sind nicht Teil dieses Repos.</p>
+</body></html>

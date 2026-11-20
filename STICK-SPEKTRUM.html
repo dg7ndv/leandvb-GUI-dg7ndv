@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RTL-Stick Spektrum-Server - Dokumentation</title>
+<style>
+  :root { --fg:#1d2330; --bg:#fbfbfd; --accent:#2a6fb8; --soft:#eef3fa; --warn:#b5651d; }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) { --fg:#e6e9ef; --bg:#1b1f27; --accent:#7fb3ec; --soft:#252c38; --warn:#f0a35e; }
+  }
+  :root[data-theme="dark"] { --fg:#e6e9ef; --bg:#1b1f27; --accent:#7fb3ec; --soft:#252c38; --warn:#f0a35e; }
+  body { margin:0; padding:24px 16px; background:var(--bg); color:var(--fg);
+         font:16px/1.55 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  main { max-width:900px; margin:0 auto; }
+  h1 { font-size:1.8rem; margin:0 0 4px; }
+  h2 { font-size:1.4rem; border-bottom:2px solid var(--accent); padding-bottom:4px; margin-top:40px; }
+  h3 { font-size:1.1rem; margin-top:24px; color:var(--accent); }
+  code, pre { font-family: ui-monospace, Menlo, Consolas, monospace; font-size:.92em; }
+  code { background:var(--soft); padding:1px 5px; border-radius:4px; }
+  pre { background:var(--soft); padding:10px 12px; border-radius:6px; overflow-x:auto; }
+  table { width:100%; border-collapse:collapse; margin:12px 0; font-size:.95em; }
+  th, td { text-align:left; padding:6px 8px; border-bottom:1px solid var(--soft); vertical-align:top; }
+  th { color:var(--accent); }
+  .note { border-left:4px solid var(--accent); background:var(--soft); padding:8px 12px; border-radius:4px; margin:14px 0; }
+  .warn { border-left:4px solid var(--warn); background:var(--soft); padding:8px 12px; border-radius:4px; margin:14px 0; }
+  nav ol { padding-left:20px; }
+  a { color:var(--accent); }
+  @media (max-width:520px) { body { font-size:15px; } }
+</style>
+</head>
+<body>
+<main>
+<h1>RTL-Stick Spektrum-Server</h1>
+<p>Dokumentation zum Programm <code>rtl-sdr-server</code> von HB9IIU (Daniel) in der für den LNB von DG7NDV angepassten Fassung <code>main_lo9540.py</code>, und wie die <code>leandvb-GUI</code> es einbindet. Stand: Oktober 2026.</p>
+
+<nav>
+<ol>
+  <li><a href="#k1">Was das Programm ist (und was nicht)</a></li>
+  <li><a href="#k2">Voraussetzungen und Dateien</a></li>
+  <li><a href="#k3">Manuell starten</a></li>
+  <li><a href="#k4">Webseite und Webserver</a></li>
+  <li><a href="#k5">Kommandozeilen-Optionen</a></li>
+  <li><a href="#k6">Die Anpassung main_lo9540.py</a></li>
+  <li><a href="#k7">Frequenz-Offset messen</a></li>
+  <li><a href="#k8">WebSocket-Format</a></li>
+  <li><a href="#k9">Einstellungen im Quelltext</a></li>
+  <li><a href="#k10">Einbindung in die leandvb-GUI</a></li>
+  <li><a href="#k11">Fehlersuche</a></li>
+</ol>
+</nav>
+
+<h2 id="k1">1. Was das Programm ist (und was nicht)</h2>
+<p>Der Server nutzt einen RTL-SDR-Stick (Tuner R820T/2) als <strong>Spektrumanalysator</strong> für das QO-100-Breitbandtransponder-Band 10490,5 bis 10499,5 MHz. Er stellt den Stick nacheinander auf mehrere überlappende Portionen, setzt sie zu einem Spektrum mit 922 Punkten zusammen und schickt jeden fertigen Durchlauf per WebSocket an Anzeigeprogramme. Das Format entspricht dem BATC-/Airspy-Spektrum, deshalb zeigt dieselbe Webseite und dieselbe Auswertung in der GUI beides gleich an.</p>
+<div class="warn"><strong>Kein Empfänger:</strong> Der Server dekodiert kein DATV, er liefert nur Pegel über der Frequenz. Zum Empfangen braucht man weiter LongMynd/MiniTiouner, die Octagon oder den <code>rtl_sdr</code>-Empfang mit leandvb. Der Stick gehört immer nur <em>einem</em> Programm: Server und <code>rtl_sdr</code>-Empfang schließen sich aus.</div>
+<p>Das Projekt ist Teil des Repos <code>QO100-RASPI-RECEIVER</code> (HB9IIU). Dort ist der Server nur der optionale Spektrumteil eines Empfängers für Raspberry Pi mit MiniTiouner. Die Rufzeichenanzeige und das Dekodieren machen dort LongMynd und der MiniTiouner.</p>
+
+<h2 id="k2">2. Voraussetzungen und Dateien</h2>
+<h3>Software</h3>
+<ul>
+  <li>Python 3 mit <code>numpy</code>, <code>pyrtlsdr</code> (Modul <code>rtlsdr</code>, braucht <code>librtlsdr</code>) und <code>websockets</code> (Version 15)</li>
+  <li>Installation falls nötig: <code>pip install numpy pyrtlsdr websockets --break-system-packages</code></li>
+  <li>Für die Anbindung in der GUI zusätzlich <code>websocket-client</code> (das hat die GUI ohnehin für BATC)</li>
+</ul>
+<h3>Verzeichnis</h3>
+<p>Der Klon liegt unter <code>~/sdr/dvbs_tx_dg7ndv/DATVreceiver</code>, der Server in <code>rtl-sdr-server-source</code>:</p>
+<table>
+<tr><th>Datei / Ordner</th><th>Inhalt</th></tr>
+<tr><td><code>main.py</code></td><td>Original-Server von HB9IIU (hier mit <code>LNB_LO_MHZ = 9540.0</code>, Sicherung <code>main.py.orig</code> mit 9750)</td></tr>
+<tr><td><code>main_lo9540.py</code></td><td>Angepasste Kopie, die mit dem 9540-MHz-LNB funktioniert (siehe <a href="#k6">Kapitel 6</a>). <strong>Diese Datei benutzen.</strong></td></tr>
+<tr><td><code>app/spectrum_ws.py</code></td><td>WebSocket-Server und Kodierung der Pegel</td></tr>
+<tr><td><code>app/spectrum_calibration.json</code></td><td>922 additive dB-Korrekturen (anfangs null), Neustart nach Änderung nötig</td></tr>
+<tr><td><code>tools/calibrate_beacon.py</code></td><td>Messung des Bake-Offsets (wird von <code>--measure-offset</code> benutzt)</td></tr>
+<tr><td><code>WEBpage/index.html</code></td><td>Browser-Anzeige mit zwei Spektren: oben ein eingebauter Demo-Mitschnitt, unten „Local Feed“ vom Stick</td></tr>
+<tr><td><code>docs/WEBSOCKET.md</code></td><td>Technische Beschreibung des WebSocket-Formats (Original)</td></tr>
+<tr><td><code>start1.sh</code>, <code>start2.sh</code>, <code>start3.sh</code></td><td>Kleine Startnotizen (Messung, Server mit Browser, Server mit Offset)</td></tr>
+</table>
+
+<h2 id="k3">3. Manuell starten</h2>
+<p>Alles im Terminal auf dem Rechner, an dem der Stick steckt.</p>
+<ol>
+  <li>Den Stick freimachen: den <code>rtl_sdr</code>-Empfang der GUI beenden, zum Beispiel mit <code>~/sdr/leandvb-GUI/stop.sh</code>.</li>
+  <li>Ins Verzeichnis wechseln:
+<pre>cd ~/sdr/dvbs_tx_dg7ndv/DATVreceiver/rtl-sdr-server-source</pre></li>
+  <li>Den Server starten (mit dem gemessenen Offset von 111 kHz):
+<pre>python3 main_lo9540.py --correction-khz 111</pre></li>
+  <li>Im Terminal erscheint ein Banner, dann <code>STREAMING | Sweep 1 | Refresh ... s | 922 points sent</code>. Das heißt, der Server liefert. Ausgaben kommen alle etwa 10 Sekunden.</li>
+  <li>Die Anzeige öffnen (<a href="#k4">Kapitel 4</a>).</li>
+  <li>Beenden mit <strong>Strg+C</strong>. Der Stick wird dabei freigegeben.</li>
+</ol>
+<div class="note">Der Server hört auf allen Netzwerkschnittstellen (0.0.0.0) auf Port <strong>7681</strong>. Im Banner stehen die Adressen, zum Beispiel <code>ws://localhost:7681/</code> und die LAN-Adresse des Rechners.</div>
+
+<h2 id="k4">4. Webseite und Webserver</h2>
+<h3>Variante A: Datei direkt im Browser öffnen</h3>
+<pre>firefox file:///home/dg7ndv/sdr/dvbs_tx_dg7ndv/DATVreceiver/rtl-sdr-server-source/WEBpage/index.html</pre>
+<p>Die Seite verbindet sich mit <code>ws://localhost:7681</code> (bei <code>file://</code> ist der Hostname leer, dann gilt <code>localhost</code>).</p>
+<h3>Variante B: kleiner Webserver, auch für andere Rechner im Netz</h3>
+<pre>cd ~/sdr/dvbs_tx_dg7ndv/DATVreceiver/rtl-sdr-server-source/WEBpage
+python3 -m http.server 8080</pre>
+<p>Dann im Browser <code>http://localhost:8080</code> oder <code>http://&lt;IP des Rechners&gt;:8080</code> öffnen. Die Seite baut die WebSocket-Verbindung zum <em>Hostnamen auf, unter dem sie geladen wurde</em>, Port 7681. Das Spektrum-Programm und der Webserver sind zwei getrennte Prozesse. Port 7681 (WebSocket) und 8080 (Webseite) müssen vom anderen Rechner aus erreichbar sein (Firewall).</p>
+<h3>Was man sieht</h3>
+<ul>
+  <li><strong>Oben</strong> („OSCAR 100 Offline Wideband Spectrum“): ein fest eingebauter Demo-Mitschnitt, unabhängig vom Stick.</li>
+  <li><strong>Unten</strong> („Local Feed (Python App)“): das Live-Spektrum vom Stick. Solange nichts ankommt, steht dort „Waiting for local feed..“.</li>
+  <li>Die Bake A71A sollte bei 10491,5 MHz stehen, das ist der Maßstab für die Korrektur.</li>
+</ul>
+<p>Die Seite ist nur ein Betrachter. Auch die leandvb-GUI und beliebige andere Programme können sich mit dem WebSocket verbinden (<a href="#k10">Kapitel 10</a>).</p>
+
+<h2 id="k5">5. Kommandozeilen-Optionen</h2>
+<table>
+<tr><th>Option</th><th>Bedeutung</th></tr>
+<tr><td><code>--correction-khz X</code></td><td>Frequenzkorrektur in kHz. Positiv stellt jede Portion um X kHz tiefer ein und schiebt Signale auf dem festen Raster nach oben. Standard 0. Für deinen Aufbau: <code>111</code>.</td></tr>
+<tr><td><code>--ws-port N</code></td><td>WebSocket-Port, 1 bis 65535 (Standard 7681)</td></tr>
+<tr><td><code>--self-test</code></td><td>Prüft Bibliotheken und WebSocket-Auslieferung, ohne den Stick zu öffnen. Ausgabe <code>PASS ...</code> bei Erfolg.</td></tr>
+<tr><td><code>--measure-offset</code></td><td>Einmalmessung: öffnet den Stick, misst, wo die Bake wirklich erscheint, gibt das Ergebnis aus und beendet sich. Es wird kein Spektrum geliefert.</td></tr>
+<tr><td><code>--captures N</code></td><td>Anzahl der Messungen für <code>--measure-offset</code>, 10 bis 1000 (Standard 30)</td></tr>
+<tr><td><code>--gain DB</code></td><td>Tunerverstärkung in dB, gilt <em>nur</em> für <code>--measure-offset</code> (Standard 10). Für den Dauerbetrieb gilt <code>GAIN_DB</code> im Quelltext.</td></tr>
+</table>
+
+<h2 id="k6">6. Die Anpassung main_lo9540.py</h2>
+<p>Das Original rechnet mit einem LNB-Oszillator von 9750 MHz. Dein LNB hat 9540 MHz. Eine reine Änderung von <code>LNB_LO_MHZ</code> auf 9540 reicht <em>nicht</em>: Die Messung (<code>--measure-offset</code>) lief damit, aber der normale Betrieb brach mit <code>Sweep settings leave gaps in the 922-point output grid</code> ab. Grund: Das Ausgaberaster (922 Punkte, Zwischenfrequenz um 745 MHz) ist fest auf 9750 MHz LO gelegt. Mit 9540 MHz rechnete das Programm die Abtastung bei etwa 955 MHz, traf das Raster nicht und fand Lücken.</p>
+<p>Lösung in <code>main_lo9540.py</code> (Original <code>main.py</code> bleibt unberührt):</p>
+<ul>
+  <li><code>LNB_LO_MHZ = 9540.0</code>: echter LNB, nur für die Offset-Messung und die Anzeige im Banner</li>
+  <li><code>DISPLAY_LO_MHZ = 9750.0</code>: Referenz des festen Rasters, wird für den Sweep-Plan benutzt</li>
+  <li>Der Tuner wird beim Abtasten um die Differenz (9750 − 9540 = 210 MHz) <em>höher</em> eingestellt:
+<pre>sdr.center_freq = center - correction_hz + (DISPLAY_LO_MHZ - LNB_LO_MHZ) * 1e6</pre></li>
+  <li>Ergebnis: Das Raster bleibt gleich, der Stick wird auf 950,8 bis 959,2 MHz Zwischenfrequenz gestellt, 11 Portionen, keine Lücken.</li>
+</ul>
+<div class="note">Bei einem anderen LNB (zum Beispiel 9750 MHz) in <code>main_lo9540.py</code> nur <code>LNB_LO_MHZ</code> anpassen. Bei 9750 ist die Differenz null, und die Datei verhält sich wie das Original.</div>
+
+<h2 id="k7">7. Frequenz-Offset messen</h2>
+<p>Die Bake A71A sendet bei genau 10491,500 MHz. Die Messung stellt fest, wie weit sie auf deinem Stick abweicht:</p>
+<pre>python3 main.py --measure-offset --captures 10</pre>
+<p>(<code>main.py</code> trägt bei dir 9540,0 als LNB-Wert. Mit <code>main_lo9540.py</code> geht es genauso.)</p>
+<p>Ausgabe zum Beispiel:</p>
+<pre>CAPTURE 1/10 ok correction_khz=+105.23 width_khz=1431.7 contrast_db=10.9
+...
+RESULT ok accepted=10 attempts=10 median_khz=+111.11 mean_khz=+111.32 stdev_khz=3.18</pre>
+<ul>
+  <li><code>median_khz</code> ist der Wert für <code>--correction-khz</code> (hier gerundet <code>111</code>).</li>
+  <li>Positiv heißt: Die Bake erscheint tiefer als erwartet, bezogen auf den Nennwert 9540,000 MHz.</li>
+  <li>Der Wert ist die <strong>Summe</strong> aus dem Fehler des LNB-Oszillators und dem Fehler des Stick-Quarzes. Beide lassen sich damit nicht trennen.</li>
+  <li><code>contrast_db</code> um 11 dB und <code>width_khz</code> um 1450 sind plausibel für die Bake (1,5 MS/s).</li>
+  <li>Messung nach 15 bis 30 Minuten Betrieb wiederholen, denn der Quarz driftet beim Aufwärmen.</li>
+</ul>
+<p>Meldet die Messung <code>rejected reason=Beacon contrast below 3 dB or passband edges not clear</code> bei allen Messungen, dann sucht das Programm die Bake an der falschen Stelle: meist ist <code>LNB_LO_MHZ</code> falsch gesetzt, sonst ist LNB oder Antenne das Problem.</p>
+
+<h2 id="k8">8. WebSocket-Format</h2>
+<table>
+<tr><th>Eigenschaft</th><th>Wert</th></tr>
+<tr><td>Adresse</td><td><code>ws://&lt;Rechner&gt;:7681/</code></td></tr>
+<tr><td>Unterprotokolle</td><td><code>fft</code>, <code>fft_fast</code>, <code>fft_m0dtslivetune</code>, <code>fft_f5oeoplutofw</code>, <code>fft_ea7kirsatcontroller</code>. Verbindungen ohne Unterprotokoll gehen auch. Alle liefern denselben Takt, <code>fft_fast</code> ist nicht schneller.</td></tr>
+<tr><td>Nachricht</td><td>binär, 922 little-endian <code>uint16</code> = 1844 Byte, ohne Kopf, pro fertigem Durchlauf eine Nachricht</td></tr>
+<tr><td>Frequenz von Index i</td><td><code>740498046,875 + i × 9765,625 Hz</code> am LNB-Ausgang (Raster bei 9750 MHz LO). Bezogen auf die Downlink-Frequenz: 10490,498 MHz + i × 9,7656 kHz.</td></tr>
+<tr><td>Pegel</td><td>1 dB entspricht etwa 3000 Zählern, der Rauschteppich liegt bei etwa 9000. Es ist die Anzeigeskala des BATC-Originals, keine kalibrierte Messung.</td></tr>
+<tr><td>Neue Clients</td><td>bekommen sofort den letzten fertigen Durchlauf. Langsame Clients überspringen alte Durchläufe.</td></tr>
+<tr><td>Erneuerungsrate</td><td>etwa eine Sekunde pro Durchlauf (elf Portionen nacheinander)</td></tr>
+</table>
+
+<h2 id="k9">9. Einstellungen im Quelltext</h2>
+<p>Die Aufnahmeeinstellungen stehen oben in <code>main_lo9540.py</code>:</p>
+<table>
+<tr><th>Konstante</th><th>Wert</th><th>Bedeutung</th></tr>
+<tr><td><code>LNB_LO_MHZ</code></td><td>9540.0</td><td>echter LNB-Oszillator</td></tr>
+<tr><td><code>DISPLAY_LO_MHZ</code></td><td>9750.0</td><td>Referenz des festen Rasters, nicht ändern</td></tr>
+<tr><td><code>RF_START_MHZ</code> / <code>RF_STOP_MHZ</code></td><td>10490,5 / 10499,5</td><td>Bandgrenzen</td></tr>
+<tr><td><code>SAMPLE_RATE</code></td><td>2,4e6</td><td>Abtastrate des Sticks (praktische Obergrenze)</td></tr>
+<tr><td><code>GAIN_DB</code></td><td>10,0</td><td>feste Verstärkung, AGC aus. Höher macht schwache Signale sichtbar, kann aber die Bake übersteuern. Versuch: 25 bis 30.</td></tr>
+<tr><td><code>FFT_SIZE</code>, <code>AVERAGES</code></td><td>246, 335</td><td>FFT-Länge und Mittelungen je Portion</td></tr>
+<tr><td><code>STEP_HZ</code>, <code>USABLE_HALF_HZ</code></td><td>933 333, 1 066 667</td><td>Abstand und nutzbare Breite der Portionen</td></tr>
+</table>
+<p>Nach jeder Änderung den Server neu starten. Die dB-Korrekturtabelle <code>app/spectrum_calibration.json</code> wird nur beim Start gelesen.</p>
+
+<h2 id="k10">10. Einbindung in die leandvb-GUI</h2>
+<div class="warn">Die GUI-Einbindung ist programmiert und auf Syntax geprüft, aber noch nicht live mit dem Stick getestet. Fehler bitte melden.</div>
+<h3>Bedienung</h3>
+<ul>
+  <li>In der Kopfzeile über dem BATC-Spektrum, ganz links, steht der Knopf <strong>Scan-Spektrum</strong>, rechts daneben <strong>Farbverlauf</strong>.</li>
+  <li><strong>Scan-Spektrum</strong> an (grün): Die GUI startet <code>main_lo9540.py</code> im Hintergrund (<code>--correction-khz</code> und <code>--ws-port</code> aus der Konfiguration), verbindet sich per WebSocket und zeigt das Stick-Spektrum in einem zweiten Feld unter dem BATC-Spektrum. Das Feld ist immer farbig (Farbverlauf nach Signalstärke, Spitzen rot).</li>
+  <li><strong>Scan-Spektrum</strong> aus (grau): Das Feld verschwindet, der Server wird beendet, der Stick ist frei. Beim Beenden der GUI passiert das ebenfalls.</li>
+  <li>Läuft auf dem Port schon ein Server, zum Beispiel aus dem Terminal, verbindet sich die GUI nur damit und beendet ihn beim Ausschalten <em>nicht</em>.</li>
+  <li>Läuft gerade ein <code>rtl_sdr</code>-Prozess (Empfangspipeline), startet der Knopf nichts und schreibt ins Log, dass der Stick belegt ist.</li>
+  <li><strong>Farbverlauf</strong> schaltet den Verlauf für das <em>obere</em> BATC-Spektrum ein oder aus (grün = an). Das Scan-Spektrum bleibt immer farbig.</li>
+  <li>Im Scan-Spektrum werden erkannte Signale mit Rechteck, Datenrate und Frequenz markiert. Signale, die weniger als 2,5 dB über dem lokalen Rauschen liegen, werden ausgeblendet (Rauschhügel, Störspitzen).</li>
+</ul>
+<h3>Einstellungen in ~/.leandvb-GUI/app_config.json</h3>
+<table>
+<tr><th>Schlüssel</th><th>Standard</th><th>Bedeutung</th></tr>
+<tr><td><code>stick_spectrum_script</code></td><td><code>~/sdr/dvbs_tx_dg7ndv/DATVreceiver/rtl-sdr-server-source/main_lo9540.py</code></td><td>Pfad des Server-Skripts</td></tr>
+<tr><td><code>stick_spectrum_corr_khz</code></td><td>111.0</td><td>Frequenzkorrektur in kHz</td></tr>
+<tr><td><code>stick_spectrum_port</code></td><td>7681</td><td>WebSocket-Port</td></tr>
+<tr><td><code>stick_spectrum_min_contrast_db</code></td><td>2.5</td><td>Mindestabstand zum Rauschen für Signalmarkierungen. Höher blendet mehr aus (3,5 bis 4), niedriger zeigt schwächere Signale (1,5 bis 2).</td></tr>
+<tr><td><code>spectrum_gradient</code></td><td>false</td><td>Farbverlauf im oberen BATC-Spektrum</td></tr>
+</table>
+<p>Die Datei wird beim Start der GUI eingelesen. Fehlende Schlüssel ergänzt sie selbst mit den Standardwerten.</p>
+<h3>Logdatei</h3>
+<p>Die Ausgaben des von der GUI gestarteten Servers stehen in <code>~/.leandvb-GUI/stick_spektrum.log</code>. Dort findet man auch Python-Fehlermeldungen, wenn der Server nicht startet.</p>
+
+<h2 id="k11">11. Fehlersuche</h2>
+<table>
+<tr><th>Symptom</th><th>Ursache und Abhilfe</th></tr>
+<tr><td>Webseite unten „Waiting for local feed..“</td><td>Server läuft nicht oder ist abgebrochen. Im Terminal nach <code>STREAMING</code> oder einem Traceback sehen. Prüfen mit <code>ss -ltn | grep 7681</code>, Seite danach mit F5 neu laden. Der erste Durchlauf braucht einige Sekunden.</td></tr>
+<tr><td><code>ValueError: Sweep settings leave gaps in the 922-point output grid</code></td><td>Es wurde <code>main.py</code> mit LNB 9540 gestartet. <code>main_lo9540.py</code> verwenden (<a href="#k6">Kapitel 6</a>).</td></tr>
+<tr><td><code>RESULT failed ... only 0 of 10 captures were usable</code></td><td>Alle Messungen abgelehnt (Kontrast unter 3 dB): <code>LNB_LO_MHZ</code> falsch, LNB ohne Spannung, Antenne verstellt oder Splitter ohne DC-Durchlass.</td></tr>
+<tr><td>Stick lässt sich nicht öffnen / „usb_claim_interface“-Fehler</td><td>Der Stick ist belegt, meist durch <code>rtl_sdr</code>, die GUI-Pipeline oder einen zweiten Serverprozess. Mit <code>~/sdr/leandvb-GUI/stop.sh</code> oder <code>pkill -f main_lo9540.py</code> beenden.</td></tr>
+<tr><td><code>ModuleNotFoundError: rtlsdr</code> / <code>numpy</code> / <code>websockets</code></td><td>Fehlende Python-Pakete installieren (<a href="#k2">Kapitel 2</a>). Das <code>python3</code>, das die GUI benutzt, muss sie ebenfalls kennen.</td></tr>
+<tr><td>Port 7681 belegt (<code>Address already in use</code>)</td><td>Es läuft schon ein Server. Beenden oder mit <code>--ws-port</code> einen anderen Port wählen (dann den Wert auch in <code>stick_spectrum_port</code> eintragen).</td></tr>
+<tr><td>Bake steht neben 10491,5 MHz</td><td>Offset nachmessen (<a href="#k7">Kapitel 7</a>) und <code>--correction-khz</code> anpassen, in der GUI <code>stick_spectrum_corr_khz</code>.</td></tr>
+<tr><td>Schwache Signale unsichtbar</td><td><code>GAIN_DB</code> erhöhen (<a href="#k9">Kapitel 9</a>), Server neu starten.</td></tr>
+<tr><td>Spektrum der GUI sehr träge mit Farbverlauf</td><td>Knopf „Farbverlauf“ ausschalten (gilt nur fürs obere Spektrum).</td></tr>
+</table>
+
+<p style="margin-top:40px;font-size:.9em;opacity:.8">Quellen: README und <code>docs/WEBSOCKET.md</code> des Repos <code>HB9IIU/QO100-RASPI-RECEIVER</code>, eigene Messungen und Anpassungen (DG7NDV).</p>
+</main>
+</body>
+</html>

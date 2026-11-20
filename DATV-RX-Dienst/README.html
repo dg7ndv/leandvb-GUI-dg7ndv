@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="de"><head><meta charset="utf-8"><title>QO-100 Wächter (MQTT)</title>
+<style>body{font-family:sans-serif;max-width:60em;margin:2em auto;padding:0 1em;line-height:1.5}code,pre{background:#eee;padding:.1em .3em}pre{padding:.7em;overflow:auto}td,th{border:1px solid #999;padding:.3em .6em;text-align:left}table{border-collapse:collapse}</style></head><body>
+<h1>QO-100 Wächter (MQTT)</h1>
+<p>Liest das BATC-Wideband-Spektrum und meldet neue und verschwundene DATV-Signale per MQTT. Erkennung wie in der leandvb-GUI
+(Kalibrierung 10490,5&nbsp;MHz + 9&nbsp;MHz, 5-s-Fenster, neu ab 50&nbsp;% der Bilder, weg unter 20&nbsp;% plus 10&nbsp;s Nachlauf). Nur Auslesen, keine Steuerung.</p>
+<p>Ordner: <code>~/sdr/leandvb-GUI/DATV-RX-Dienst</code>. Zapper, Wächter und Anleitung: siehe <a href="ANLEITUNG_zapper.html">ANLEITUNG_zapper.html</a>.</p>
+<h2>Übersicht der Programme in diesem Ordner</h2>
+<table><tr><th>Programm</th><th>Zweck</th><th>Anleitung</th></tr>
+<tr><td><b>QO 100 Multi-Zapper</b> (<code>RTL-SDR-datvRX-Dienst/datvrx_dienst.py</code>, Motor <code>zapper.py</code>)</td><td>Dienst am Raspberry Pi: mehrere RTL-Sticks, Scan, Autoverteiler, Webseite (Port 8554) mit Hilfe, Bake-Offset, Spektrum, Displays am HDMI, Handy-Seite (8555), API, MQTT</td><td><a href="RTL-SDR-datvRX-Dienst/ANLEITUNG.html">ANLEITUNG.html</a> (auch auf dem Pi: <code>/anleitung</code>, Kurzhilfe <code>/hilfe</code>)</td></tr>
+<tr><td><b>MultiPlayer</b> (<code>multiplayer.py</code>)</td><td>Fenster am PC: je aktivem Stick ein Player, Quad, Fensterlagen, Text im Player, Steuerung des Dienstes</td><td>ANLEITUNG.html, Abschnitt MultiPlayer</td></tr>
+<tr><td><b>Zapper</b> (<code>zapper.py</code>, einzeln am PC) und <b>Wächter</b> (<code>qo100_wacht.py</code>, <code>waechter_mqtt.py</code>)</td><td>VLC-Zapper am PC, Protokoll der Signale, MQTT-Wächter am Hauspi (dieser Text unten)</td><td><a href="ANLEITUNG_zapper.html">ANLEITUNG_zapper.html</a></td></tr>
+<tr><td><code>dienst_client.py</code>, <code>datv_core.py</code>, <code>signal_da.py</code></td><td>gemeinsame Bausteine (API-Client, MER/Rufzeichen/Pegel)</td><td>im Quelltext</td></tr></table>
+<h2>Läuft auf</h2>
+<p>Hauspi <code>pi@192.168.20.10</code>, Dienst <code>qo100-waechter</code> (systemd), Broker <code>127.0.0.1:1883</code> dort (Mosquitto im Docker, anonym).</p>
+<h2>MQTT-Themen (Prefix <code>qo100</code>)</h2>
+<table><tr><th>Thema</th><th>Inhalt</th></tr>
+<tr><td><code>qo100/waechter/online</code></td><td><code>online</code> / <code>offline</code> (retained, Last-Will)</td></tr>
+<tr><td><code>qo100/signal/neu</code></td><td>Ereignis JSON: <code>{"ereignis":"neu","freq_mhz":10492.757,"sr_ks":500,"bw_khz":540,"zeit":"2026-11-11T17:34:34"}</code></td></tr>
+<tr><td><code>qo100/signal/weg</code></td><td>wie oben, erst nach 10&nbsp;s Abwesenheit</td></tr>
+<tr><td><code>qo100/signal/wieder</code></td><td>ein als weg markiertes Signal ist zurück</td></tr>
+<tr><td><code>qo100/signale</code></td><td>Status aller Signale als JSON (retained), nur bei Änderung: <code>{"zeit","anzahl","bake","signale":[{"id","freq_mhz","sr_ks","bw_khz","seit","dauer_s","zustand":"aktiv|weg"}]}</code></td></tr>
+<tr><td><code>qo100/signale/anzahl</code></td><td>Zahl der aktiven Signale (retained)</td></tr></table>
+<h2>Bedienung</h2>
+<pre>mosquitto_sub -h 192.168.20.10 -t 'qo100/#' -v          # alles mitlesen
+ssh pi@192.168.20.10 'journalctl -u qo100-waechter -f'   # Dienstprotokoll
+ssh pi@192.168.20.10 'sudo systemctl restart qo100-waechter'
+./install_pi.sh                                         # (neu) installieren / aktualisieren
+./install_pi.sh --entfernen                             # Dienst wieder entfernen
+./waechter_mqtt.py --prefix qo100test                   # lokaler Test mit anderem Prefix</pre>
+<h2>Dateien</h2>
+<table><tr><th>Datei</th><th>Zweck</th></tr>
+<tr><td>waechter_mqtt.py</td><td>der MQTT-Wächter</td></tr>
+<tr><td>qo100-waechter.service</td><td>systemd-Dienst für den Pi</td></tr>
+<tr><td>install_pi.sh</td><td>Installation/Entfernen per SSH</td></tr>
+<tr><td>qo100_wacht.py</td><td>Wächter für den PC: meldet Signale und decodiert sie mit datvrx am RTL-Stick (<code>--decode</code>), schreibt <code>qo100_protokoll.csv</code></td></tr>
+<tr><td>signal_da.py</td><td>misst am RTL-Stick, ob auf einer Frequenz ein Signal da ist</td></tr>
+<tr><td>datvrx_rx.sh</td><td>datvrx-Empfang (RTL-SDR, HackRF, Pluto, SDRplay); benötigt <code>datvrx</code> aus <code>~/sdr/leandvb-GUI/DATVision</code></td></tr></table>
+</body></html>

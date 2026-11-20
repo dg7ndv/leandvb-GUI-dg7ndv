@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>miniswitcher – Hilfe</title>
+<style>
+body{font-family:sans-serif;max-width:900px;margin:24px auto;padding:0 16px;line-height:1.5;color:#222}
+h1{color:#1a5fb4}h2{border-bottom:1px solid #ccc;padding-bottom:3px;margin-top:28px}
+code,pre{background:#f3f3f3;border-radius:4px}code{padding:1px 4px}pre{padding:10px;overflow-x:auto}
+table{border-collapse:collapse;width:100%}td,th{border:1px solid #ccc;padding:5px 8px;text-align:left;vertical-align:top}
+th{background:#eef3fa}.hint{background:#fff6d5;border-left:4px solid #f1c40f;padding:8px 12px}
+</style>
+</head>
+<body>
+<h1>miniswitcher</h1>
+<p>Kleine Bedienung für QO-100 mit dem OnAir-Fenster (DG7NDV). Sie zeigt nur das BATC-Spektrum.
+Ein Klick auf ein Signal stellt das OnAir-Fenster darauf ein, der Player spielt den Stream.</p>
+
+<h2>Windows: Python installieren (als Erstes!)</h2>
+<div class="hint"><b>Schritt 1 unter Windows – vor allem anderen:</b> den <b>Python Install Manager</b> installieren.
+Ohne Python läuft der miniswitcher nicht. Unter Linux ist Python schon da.</div>
+<p><img src="miniswitcher_win_python.png" alt="Python Install Manager (Python Software Foundation)"
+ style="max-width:100%;border:1px solid #888"></p>
+<p>Zwei Wege zur Installation:</p>
+
+<h3>Weg 1: über den Software-Manager (Microsoft Store)</h3>
+<p><b>Python Install Manager</b> der Python Software Foundation:
+<a href="https://apps.microsoft.com/detail/9nq7512cxl7t?hl=de-DE&amp;gl=DE">https://apps.microsoft.com/detail/9nq7512cxl7t?hl=de-DE&amp;gl=DE</a>
+– „Herunterladen“ bzw. „Im Store anzeigen“ → Installieren. Danach steht der Befehl <code>py</code> zur Verfügung.</p>
+
+<h3>Weg 2: über die PowerShell</h3>
+<pre>winget install Python.Python.3.12</pre>
+
+<h3>Danach (PowerShell, für beide Wege)</h3>
+<pre>py -m pip install websocket-client      # Zusatzmodul fuer das BATC-Spektrum
+winget install VideoLAN.VLC             # Player (falls noch nicht da)
+winget install Gyan.FFmpeg              # ffprobe fuer die Rufzeichen-Erkennung
+py miniswitcher.py                      # starten (im Ordner mit miniswitcher.py)</pre>
+<p>tkinter (Fenster) ist bei diesem Python schon dabei. Fehlt doch etwas, meldet der miniswitcher es beim Start mit dem
+passenden Installationsbefehl.</p>
+
+<h2>Grundeinstellung: Steuerung laufender OnAir</h2>
+<p>Der miniswitcher steuert ein laufendes OnAir-Fenster über dessen Fernsteuerungs-API und spielt den Stream,
+den OnAir per UDP aussendet. Dafür sind im OnAir-Fenster zwei Einstellungen nötig.</p>
+
+<h3>1. Fernsteuerungs-API einschalten (einmalig)</h3>
+<p>Menü <b>Ansicht → Datafeeds</b> (englisch: View → Data feeds), Abschnitt „Fernsteuerungs-API (HTTP und WebSocket)“:</p>
+<ol>
+<li>Haken <b>„Skripten und anderen Programmen erlauben, diesen Empfänger zu steuern“</b> setzen, Port <b>8765</b>.</li>
+<li>„Andere Computer zulassen (LAN, Token erforderlich)“ ist nur nötig, wenn ein anderer Rechner steuern soll.
+Programme auf demselben Rechner brauchen kein Token; der miniswitcher schickt es trotzdem automatisch mit
+(aus <code>~/.config/onair/settings.conf</code>).</li>
+<li>Darunter muss in Grün stehen: „hört auf … Port 8765“ – dann ist die API bereit.</li>
+</ol>
+<p><img src="miniswitcher_onair_api.png" alt="OnAir: Ansicht → Datafeeds → Fernsteuerungs-API, Port 8765"
+ style="max-width:100%;border:1px solid #888"></p>
+<p>OnAir speichert diese Einstellung, sie gilt bei jedem Start.</p>
+
+<h3>2. UDP-Stream einschalten (nach jedem Start von OnAir)</h3>
+<p>Tab <b>Stream</b> → <b>Outputs</b>, Abschnitt <b>UDP</b> (im Bild gelb umrahmt):</p>
+<ol>
+<li>address <code>230.0.0.10</code>, port <code>1234</code>, TTL so lassen.</li>
+<li><b>„Apply address / port / TTL“</b> klicken.</li>
+<li>Haken <b>„stream“</b> setzen. Darunter zählt dann „streaming: … datagrams“ hoch.</li>
+</ol>
+<p><img src="miniswitcher_onair_stream.png" alt="OnAir: Tab Stream → Outputs → UDP 230.0.0.10:1234, Haken stream"
+ style="max-width:100%;border:1px solid #888"></p>
+<div class="hint">Adresse und Port speichert OnAir, den Haken <b>„stream“</b> aber nicht – er muss nach jedem Start von
+OnAir neu gesetzt werden. Ausnahme: das selbst gebaute OnAir mit <code>OnAir-udp-api.patch</code>, dort schaltet der
+miniswitcher ihn automatisch per API.</div>
+
+<h2>Start</h2>
+<div class="hint"><b>Wichtig: LNB-LO passend zum eigenen LNB angeben!</b> Der miniswitcher rechnet die Frequenz für OnAir als
+<code>RF − LO</code>. Ein falscher LO ist der häufigste Grund für „kein Lock“.
+<ul style="margin:4px 0">
+<li><b>Nicht umgebauter Universal-LNB</b> (Low-Band): <code>--lo 9750</code> (die Bake 10491,5 MHz liegt dann bei 741,5 MHz ZF)</li>
+<li>umgebauter LNB mit anderem Quarz/Referenz, z.B. <code>--lo 9570</code> oder <code>--lo 9540</code> (Standard des Programms)</li>
+</ul>
+<pre style="margin:6px 0">./miniswitcher.py --lo 9750</pre>
+Den LO kann man auch oben rechts im gelben Feld <b>LNB-LO</b> ändern („setzen“ oder Enter); er wird gespeichert und gilt beim
+nächsten Start (eine <code>--lo</code>-Angabe hat Vorrang). Bei einem neuen LO wird die automatische LO-Korrektur zurückgesetzt
+und auf der Bake neu gemessen (Anzeige „Korr ± kHz“ neben dem Feld).</div>
+<pre>./miniswitcher.py                 # OnAir bei Bedarf starten und einrichten
+./miniswitcher.py --only-api      # nur die Frequenz an Port 8765 schicken
+./miniswitcher.py --device "sdrplay;rsp2;antenna a" --gain 59</pre>
+
+<h2>So sieht das laufende Programm aus</h2>
+<p><img src="miniswitcher_screen.png" alt="miniswitcher im Betrieb: Lock auf DL4CQ, 10497.260 MHz, 333 kS"
+ style="max-width:100%;border:1px solid #888"></p>
+<p>Beispiel: OnAir (HackRF) ist auf 10497,260 MHz eingerastet und empfängt DL4CQ mit 333 kS.</p>
+<table>
+<tr><th>Bereich (von oben)</th><th>Inhalt</th></tr>
+<tr><td>Kopfzeile</td><td>OnAir-Zustand in Kurzform (LOCK, ZF, Gerät, SNR, SR, ok/bad), grün das aktuelle
+<b>Rufzeichen</b>, daneben der <b>Player</b> mit Adresse (<code>VLC udp://@230.0.0.10:1234 läuft</code>); rechts die Knöpfe
+Player Start / Player Stop / Bake.</td></tr>
+<tr><td>Werte-Zeile</td><td><b>P</b> (Empfang läuft), <b>Zustand</b> (LOCK), <b>Frequenz</b> (grün = wie angeklickt),
+<b>Verstärkung</b> (G52), <b>Pegel</b> (dBFS + grobe dBm-Schätzung), <b>MER</b> (nur bei Lock), <b>Symbolrate</b>,
+<b>ok/bad</b>-Blöcke (rot, wenn „bad“ gerade steigt), <b>CFO</b> (Träger-Versatz).</td></tr>
+<tr><td>Signal-Knöpfe</td><td>ein Knopf je Signal – hier „Bake 10491.500“ und blau (= eingestellt) „10497.260 MHz 333 kS DL4CQ“.
+Neue Signale grün, verschwundene rot (nach 10 s weg).</td></tr>
+<tr><td>Spektrum</td><td>BATC-Spektrum 10490,5–10499,5 MHz mit Farbverlauf; über den Signalen Symbolrate und Rufzeichen,
+die grüne Linie markiert die eingestellte Frequenz. Klick ins Spektrum stellt dort ein.</td></tr>
+<tr><td>Statuszeile</td><td>letzte Meldung (hier der Player-Start mit allen Optionen).</td></tr>
+<tr><td>Ereignisse</td><td>die letzten vier Ereignisse mit Uhrzeit: Rufzeichen erkannt, neues Signal, Bake da, Signal weg.</td></tr>
+</table>
+
+<h2>Was ein Klick macht</h2>
+<table>
+<tr><th>Situation</th><th>Ablauf</th></tr>
+<tr><td>Kein OnAir-Fenster offen</td><td>In <code>~/.config/onair/settings.conf</code> werden Remote-API (Port 8765) und UDP-Ziel eingetragen, OnAir wird mit Oberfläche gestartet. Danach per API: Stopp → DVB-S/S2 → Start (mit <code>--device</code>, sonst das in OnAir eingestellte Gerät) → Abtastrate (Symbolrate × 4, 2–10 Msps) → Frequenz → ggf. Gain → UDP-Ausgabe ein.</td></tr>
+<tr><td>OnAir läuft, Empfang aus</td><td>Einrichten wie oben, ohne Neustart des Fensters.</td></tr>
+<tr><td>OnAir läuft und empfängt</td><td>Nur die Frequenz (und bei anderer Symbolrate die Abtastrate) wird gesetzt.</td></tr>
+<tr><td><code>--only-api</code></td><td>Nur <code>POST /api/v1/frequency</code> an 127.0.0.1:8765, sonst nichts.</td></tr>
+</table>
+<p>Die Frequenz an OnAir ist die ZF: <code>RF − LO + LO-Korrektur</code> (LO Standard 9540 MHz, <code>--lo</code>).
+Steht der Empfänger auf der Bake und lockt, wird der Träger-Versatz einmal als LO-Korrektur übernommen und in
+<code>~/.leandvb-GUI/miniswitcher.json</code> gespeichert.</p>
+
+<h2>Signal-Knöpfe</h2>
+<p>Unter der Werte-Zeile steht für jedes erkannte Signal ein Knopf (wie im Hauptprogramm). Ein Klick stellt das Signal ein.</p>
+<table>
+<tr><th>Farbe</th><th>Bedeutung</th></tr>
+<tr><td style="background:#2ecc71">grün</td><td>neues Signal (die ersten 30 s)</td></tr>
+<tr><td style="background:#3498db;color:white">blau</td><td>gerade eingestellt</td></tr>
+<tr><td style="background:#e74c3c">rot</td><td>Signal verschwunden – der Knopf wird nach 10 s gelöscht (kommt es wieder, wird er wieder grün)</td></tr>
+<tr><td style="background:#e0e0e0">grau</td><td>bekanntes Signal</td></tr>
+</table>
+
+<h2>Stream und Player</h2>
+<ul>
+<li>Stream: <code>udp://@230.0.0.10:1234</code> (änderbar mit <code>--udp</code>).</li>
+<li>Player: VLC (oder <code>--player mpv|ffplay</code>, <code>--no-player</code>), startet automatisch und wird alle 5 s
+neu gestartet, falls er nicht mehr läuft. Oben steht Player, Adresse und Zustand, z.B. <code>VLC udp://@230.0.0.10:1234 läuft</code>
+(grün = läuft, orange = startet, grau = mit „Player Stop“ angehalten). Knöpfe „Player Start/Stop“ oben rechts.</li>
+<li>Rufzeichen: alle ~3 s per <code>ffprobe</code> aus dem Stream gelesen und oben grün angezeigt, im Spektrum am Signal vermerkt.</li>
+<li><b>Rufzeichenwechsel:</b> der Player wird kurz gestoppt und neu gestartet.</li>
+</ul>
+<div class="hint"><b>UDP-Ausgabe:</b> Das installierte Original-OnAir kann den Haken „stream“ nicht per API setzen.
+Dann im Fenster Tab <i>Stream</i>: Adresse 230.0.0.10, Port 1234, Haken „stream“. Das selbst gebaute OnAir mit
+<code>OnAir-udp-api.patch</code> schaltet ihn automatisch.</div>
+
+<h2>Statuszeilen unten</h2>
+<p>Oben die letzte Meldung, darunter die letzten 4 Ereignisse mit Uhrzeit: <i>Neues Signal</i>, <i>Signal weg</i>
+(mit dem dort zuletzt erkannten Rufzeichen), <i>Bake da / Bake WEG</i> und <i>Rufzeichen</i>. Die Signale werden wie
+in der leandvb-GUI entprellt: über 5 s gesammelt, neu ab 50 % der Spektrumbilder, weg unter 20 %.</p>
+
+<h2>Optionen</h2>
+<table>
+<tr><th>Option</th><th>Bedeutung</th></tr>
+<tr><td><code>--only-api</code></td><td>nur Frequenz schicken, OnAir nicht starten/einrichten</td></tr>
+<tr><td><code>--port 8765</code></td><td>Remote-API-Port von OnAir</td></tr>
+<tr><td><code>--lo 9540</code></td><td>LNB-LO in MHz</td></tr>
+<tr><td><code>--udp 230.0.0.10:1234</code></td><td>UDP-Ziel / Player-Quelle</td></tr>
+<tr><td><code>--device "a;b;c"</code></td><td>Gerät im OnAir (alle Teilstrings müssen passen)</td></tr>
+<tr><td><code>--gain DB</code></td><td>Verstärkung beim Einrichten</td></tr>
+<tr><td><code>--player vlc|mpv|ffplay</code>, <code>--no-player</code></td><td>Player-Wahl</td></tr>
+<tr><td><code>--no-rate</code></td><td>Abtastrate nicht anpassen</td></tr>
+<tr><td><code>--onair-bin PFAD</code></td><td>anderes OnAir-Programm (z.B. selbst gebautes <code>OnAir/build/dect2</code>)</td></tr>
+<tr><td><code>--batc-url URL</code></td><td>Adresse des BATC-Spektrums</td></tr>
+</table>
+
+<h2>Voraussetzungen (Linux und Windows)</h2>
+<p>Der miniswitcher läuft unter Linux und Windows. Beim Start prüft er, ob alles vorhanden ist, und zeigt für
+Fehlendes einen Hinweis (Konsole, Statuszeile und ein Hinweisfenster).</p>
+<table>
+<tr><th>Komponente</th><th>wofür</th><th>Linux</th><th>Windows</th></tr>
+<tr><td>Python ab 3.6 mit <code>argparse, json, os, shutil, subprocess, sys, threading, time, urllib, struct, math</code></td>
+<td>Grundfunktionen</td><td colspan="2">sind in Python enthalten</td></tr>
+<tr><td><code>tkinter</code></td><td>Fenster</td><td><code>sudo apt install python3-tk</code></td>
+<td>bei Python von python.org dabei („tcl/tk and IDLE“ ankreuzen)</td></tr>
+<tr><td><code>websocket-client</code> (einziges Zusatzmodul)</td><td>BATC-Spektrum</td>
+<td><code>pip3 install websocket-client --break-system-packages</code><br>oder <code>sudo apt install python3-websocket</code></td>
+<td><code>py -m pip install websocket-client</code></td></tr>
+<tr><td>OnAir</td><td>Empfang</td><td>OnAir-.deb (<code>onair</code> im PATH)</td>
+<td>OnAir-Installer; wird in den Programmordnern gefunden, sonst <code>--onair-bin</code></td></tr>
+<tr><td>VLC (oder mpv / ffplay)</td><td>Player</td><td><code>sudo apt install vlc</code></td>
+<td>videolan.org – Standardpfad wird automatisch gefunden</td></tr>
+<tr><td>ffprobe (ffmpeg)</td><td>Rufzeichen</td><td><code>sudo apt install ffmpeg</code></td>
+<td>ffmpeg.org, Ordner <code>bin</code> in den PATH oder nach <code>C:\ffmpeg\bin</code></td></tr>
+</table>
+<p>Unter Windows liegt die OnAir-Einstellungsdatei in <code>%APPDATA%\OnAir\settings.conf</code>, die Logs des miniswitchers in
+<code>%USERPROFILE%\.leandvb-GUI\</code>.</p>
+
+<h2>Alle Module und Mini-Skripte zur Installation</h2>
+<p>Verwendete Python-Module: <code>argparse, json, os, sys, shutil, subprocess, threading, time, urllib.request,
+urllib.error, struct, math, glob</code> (in Python enthalten), <code>tkinter</code> mit <code>ttk</code> und
+<code>messagebox</code> (Fenster) und als einziges Zusatzmodul <code>websocket</code> aus dem Paket
+<b>websocket-client</b> (BATC-Spektrum). Externe Programme: <b>OnAir</b>, <b>VLC</b> (oder mpv/ffplay),
+<b>ffprobe</b> aus ffmpeg (Rufzeichen-Erkennung).</p>
+
+<h3>Linux (Debian/Ubuntu) – fertiges Skript</h3>
+<pre>./miniswitcher_install.sh            # pruefen + fehlendes per apt installieren
+./miniswitcher_install.sh --check    # nur pruefen</pre>
+<p>Oder von Hand als Mini-Skript:</p>
+<pre>sudo apt update
+sudo apt install -y python3 python3-tk python3-websocket vlc ffmpeg
+# falls python3-websocket fehlt:
+pip3 install websocket-client --break-system-packages
+# OnAir: .deb von https://on-air.dev
+sudo apt install ./onair_&lt;version&gt;_amd64.deb
+chmod +x miniswitcher.py
+./miniswitcher.py --lo 9750</pre>
+
+<h3>Windows – Mini-Skript für die PowerShell</h3>
+<pre>winget install Python.Python.3.12        # oder Python Install Manager aus dem Store (siehe oben)
+py -m pip install websocket-client
+winget install VideoLAN.VLC
+winget install Gyan.FFmpeg
+# OnAir: Installer von https://on-air.dev
+py miniswitcher.py --lo 9750</pre>
+
+<h3>Prüf-Skript (Linux und Windows)</h3>
+<p>Zeigt für jedes Modul „ok“ oder „FEHLT“ (unter Windows <code>py</code> statt <code>python3</code>):</p>
+<pre>python3 -c "
+import importlib
+for m in ['argparse','json','os','sys','shutil','subprocess','threading','time','urllib.request',
+          'urllib.error','struct','math','glob','tkinter','websocket']:
+    try:
+        importlib.import_module(m); print('ok    ', m)
+    except ImportError:
+        print('FEHLT ', m, '(pip install websocket-client)' if m == 'websocket' else '')
+"</pre>
+</body>
+</html>

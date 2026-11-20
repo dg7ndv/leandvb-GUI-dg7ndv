@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>QO-100 Zapper – Anleitung</title>
+<style>body{font-family:sans-serif;max-width:56em;margin:2em auto;padding:0 1em;line-height:1.5}code,pre{background:#eee;padding:.1em .3em}pre{padding:.7em;overflow:auto}td,th{border:1px solid #999;padding:.3em .6em;text-align:left;vertical-align:top}table{border-collapse:collapse}</style></head><body>
+<h1>QO-100 Zapper – Signale mit dem Handy durchschalten</h1>
+<p>Der <b>Zapper</b> (<code>zapper.py</code>) stellt den RTL-Stick auf ein gewähltes QO-100-Signal (DVB-S2, per <code>datvrx</code>) und liefert den Transportstrom als HTTP-Stream.
+Am Handy schaltet man in <b>VLC</b> mit der Taste „nächstes“ (▶|) von Signal zu Signal, der Stick folgt automatisch.
+Die Liste der Signale kommt aus dem BATC-Spektrum (<code>eshail.batc.org.uk/wb</code>), die Erkennung ist dieselbe wie in der leandvb-GUI.</p>
+
+<p>Ordner: <code>~/sdr/leandvb-GUI/DATV-RX-Dienst</code> (Teil des Switcher-Projekts <code>leandvb-GUI</code>).</p>
+
+<h2>Starten und Beenden</h2>
+<pre>cd ~/sdr/leandvb-GUI/DATV-RX-Dienst
+./qo100_dienste.sh start            # Zapper + Wächter starten
+./qo100_dienste.sh start zapper     # nur den Zapper
+./qo100_dienste.sh stop             # beides beenden (Stick wird frei)
+./qo100_dienste.sh status           # was läuft, aktuelles Signal, Zuschauer, Stick frei/belegt
+./qo100_dienste.sh log              # Zapper-Log mitlesen   (log waechter: Wächter-Log)</pre>
+<p>Direktstart ohne Skript: <code>./zapper.py</code> (Optionen mit <code>--help</code>).</p>
+
+<h2>Am Handy (VLC, Android oder iPhone)</h2>
+<ol>
+<li>VLC → <b>Mehr</b> bzw. <b>Netzwerk</b> → <b>Neuen Stream öffnen</b>.</li>
+<li>Adresse <code>http://192.168.20.204:8554/qo100.m3u</code> eingeben (IP des PCs), Pfeil antippen. Das Handy muss im Heim-WLAN (192.168.20.x) oder per VPN im selben Netz sein.</li>
+<li>Die Playlist hat je einen Eintrag pro Signal: zuerst die Bake, dann die Signale nach Frequenz (z. B. „10493.258 MHz 500K“).</li>
+<li><b>▶| (nächstes)</b> und <b>|◀ (zurück)</b> schalten um. Nach dem Umschalten dauert es etwa 3–5 s, bis der Stick umgestellt und gelockt hat.</li>
+<li>Ist ein Signal inzwischen weg, antwortet der Zapper mit 404 und VLC springt weiter. Die Playlist neu laden zeigt die aktuelle Liste.</li>
+</ol>
+
+<h2>Webseite und Scan</h2>
+<p><code>http://192.168.20.204:8554/</code> zeigt eine Tabelle aller Signale. In jeder Zeile stehen <b>Rufzeichen/Dienst</b> (Dienstname aus der SDT des Senders), Provider,
+Modulation mit FEC, <b>Es/N0</b>, <b>MER</b> (aus der Konstellation, QPSK), <b>Pegel</b> am Stick (dB über Rauschen und dBFS, relativ, nicht in dBm kalibriert), Bitrate, TEI/CC-Fehler und die Uhrzeit der Messung.
+Die grüne Zeile ist das gerade empfangene Signal und läuft live. Antippen eines Signals öffnet den Stream.</p>
+<ul>
+<li><b>Auto-Scan (Schalter oben, Standard AN):</b> Ein Durchlauf über alle Signale, danach Ruhe. Nur wenn ein <b>neues</b> Signal erscheint (oder eines nach dem Verschwinden wiederkommt),
+werden die neuen gescannt. Je Signal höchstens 28 s (<code>--dwell</code>); sobald Rufzeichen und MER vorliegen, geht es weiter. Läuft gerade ein Zuschauer, wird nicht gescannt.
+Nach dem Scan gibt der Zapper den Stick nach 60 s frei, danach testet der Wächter wieder. Die Einstellung wird in <code>zapper_einstellungen.json</code> gespeichert, die letzten Messwerte je Signal in <code>zapper_messwerte.json</code> (bleiben nach einem Neustart erhalten).</li>
+<li><b>Auto-Scan AUS:</b> kein automatischer Scan; der Knopf „Alle jetzt scannen“ funktioniert weiterhin von Hand (auch per <code>curl -X POST http://IP:8554/scan/start</code>, Stopp mit <code>/scan/stop</code>).</li>
+<li>Die Bake steht <b>nur auf der Webseite</b> (zum Anhören, nicht gescannt) und unter <code>/z/10491.500/1500</code>; sie ist nicht in der Playlist und wird weder vom Scan noch vom Auto-Scan gemessen.</li>
+<li>Der Pegel nahe der Bake wird nur auf der ruhigeren Seite des Signals gegen das Rauschen gemessen (die andere Seite liegt dort im Auslauf der Bake).</li>
+</ul>
+
+<h2>Adressen</h2>
+<table><tr><th>URL</th><th>Inhalt</th></tr>
+<tr><td><code>/qo100.m3u</code></td><td>Playlist für VLC (Adresse passt sich der Anfrage an)</td></tr>
+<tr><td><code>/z/&lt;MHz&gt;/&lt;kS&gt;</code></td><td>Stream eines Signals, z. B. <code>/z/10493.258/500</code>; stellt den Stick um</td></tr>
+<tr><td><code>/</code></td><td>Webseite: Signalliste zum Antippen, aktuelles Signal, Es/N0, Zuschauer</td></tr>
+<tr><td><code>/status</code></td><td>Status als JSON (aktuelles Signal, je Signal die letzte Messung, Zuschauer, Auto-Scan, Scan-Fortschritt)</td></tr>
+<tr><td><code>POST /scan/start</code>, <code>/scan/stop</code>, <code>/auto/on</code>, <code>/auto/off</code></td><td>Scan und Auto-Scan-Schalter (die Knöpfe der Webseite)</td></tr></table>
+<p>Der Transportstrom geht zusätzlich per UDP-Multicast auf <code>230.0.0.20:1234</code> (TS-Analyse, GUI-Player).</p>
+
+<h2>Zusammenspiel mit dem Wächter</h2>
+<p>Der <b>Wächter</b> (<code>qo100_wacht.py --decode</code>) testet alle neuen Signale am Stick und schreibt <code>qo100_protokoll.csv</code>. Es gibt nur einen Stick:
+solange ein Zuschauer am Zapper verbunden ist (plus 60 s Nachlauf), gehört der Stick dem Zapper und der Wächter pausiert (Sperrdatei <code>/tmp/qo100_zapper.lock</code>).
+Danach testet der Wächter automatisch weiter.</p>
+
+<h2>Grenzen</h2>
+<ul>
+<li><b>Ein Stick = ein Signal.</b> Wählen zwei Zuschauer verschiedene Signale, gewinnt der zuletzt umschaltende, der andere Strom endet.</li>
+<li><b>Der Stick empfängt nur bis etwa 2,9 MS/s</b> – für die Bake (1500 kS) nutzt <code>datvrx_rx.sh</code> automatisch 2,88 MS/s mit Versatz.</li>
+<li><b>VVC (H.266)</b>, z. B. bei SV1HEP, kann Handy-VLC vermutlich nicht anzeigen (Ton läuft, Bild bleibt schwarz). H.264 und HEVC gehen.</li>
+<li>Multicast (<code>udp://@230.0.0.20:1234</code>) funktioniert über WLAN am Handy meist nicht, daher der HTTP-Weg.</li>
+<li>Die Dienste laufen nur bis zum Abmelden/Neustart des PCs, solange sie nicht als Dienst eingerichtet sind.</li>
+</ul>
+
+<h2>Dateien</h2>
+<table><tr><th>Datei</th><th>Zweck</th></tr>
+<tr><td>qo100_protokoll.csv</td><td>Protokoll aller Wächter-Tests (Frequenz, SR, Modulation, FEC, Es/N0, MER, Pegel, Dienst, Codec, Fehler)</td></tr>
+<tr><td>zapper.py</td><td>der Zapper (HTTP-Server, Stick-Steuerung, Signalerkennung, Messwerte, Scan)</td></tr>
+<tr><td>zapper_einstellungen.json</td><td>gespeicherter Schalter Auto-Scan</td></tr>
+<tr><td>qo100_dienste.sh</td><td>Zapper und Wächter starten/stoppen/prüfen</td></tr>
+<tr><td>qo100_wacht.py, signal_da.py, datvrx_rx.sh</td><td>Wächter, Signalmessung, datvrx-Empfang (<code>datvrx_rx.sh</code> und <code>datvrx</code> sind Links auf <code>../DATVision</code>, dort liegt das Original, das auch die GUI nutzt)</td></tr>
+<tr><td>stream_relay.py</td><td>einfaches Relay ohne Umschalten (durch den Zapper ersetzt)</td></tr>
+<tr><td>waechter_mqtt.py, install_pi.sh</td><td>MQTT-Wächter für den Hauspi (neue/weg gefallene Signale, Status)</td></tr>
+<tr><td>gnome-qo100-spektrum/</td><td>GNOME-Erweiterung: Spektrum nur mit Peaks in der oberen Leiste</td></tr></table>
+
+<h2>Fehlersuche</h2>
+<ul>
+<li><b>VLC bleibt bei 0:00 / schwarz:</b> gerade kein Signal gelockt – nach 5–10 s erneut antippen; bei VVC siehe oben.</li>
+<li><b>„Stick belegt“ (503):</b> der Wächter testet noch (bis ca. 35 s) – der Zapper versucht es mehrfach selbst.</li>
+<li><b>Prüfen:</b> <code>./qo100_dienste.sh status</code> und <code>curl http://127.0.0.1:8554/status</code>.</li>
+</ul>
+</body></html>

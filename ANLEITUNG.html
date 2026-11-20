@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>leandvb-GUI Anleitung</title>
+<style>
+  :root { --fg:#1d2330; --bg:#fbfbfd; --accent:#2a6fb8; --soft:#eef3fa; --warn:#b5651d; }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) { --fg:#e6e9ef; --bg:#1b1f27; --accent:#7fb3ec; --soft:#252c38; --warn:#f0a35e; }
+  }
+  :root[data-theme="dark"] { --fg:#e6e9ef; --bg:#1b1f27; --accent:#7fb3ec; --soft:#252c38; --warn:#f0a35e; }
+  body { margin:0; padding:24px 16px; background:var(--bg); color:var(--fg);
+         font:16px/1.55 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  main { max-width:880px; margin:0 auto; }
+  h1 { font-size:1.8rem; margin:0 0 4px; }
+  h2 { font-size:1.4rem; border-bottom:2px solid var(--accent); padding-bottom:4px; margin-top:40px; }
+  h3 { font-size:1.1rem; margin-top:24px; color:var(--accent); }
+  code, pre { font-family: ui-monospace, Menlo, Consolas, monospace; font-size:.92em; }
+  code { background:var(--soft); padding:1px 5px; border-radius:4px; }
+  pre { background:var(--soft); padding:10px 12px; border-radius:6px; overflow-x:auto; }
+  table { width:100%; border-collapse:collapse; margin:12px 0; font-size:.95em; }
+  th, td { text-align:left; padding:6px 8px; border-bottom:1px solid var(--soft); vertical-align:top; }
+  th { color:var(--accent); }
+  .note { border-left:4px solid var(--accent); background:var(--soft); padding:8px 12px; border-radius:4px; margin:14px 0; }
+  .warn { border-left:4px solid var(--warn); background:var(--soft); padding:8px 12px; border-radius:4px; margin:14px 0; }
+  nav ol { padding-left:20px; }
+  a { color:var(--accent); }
+  @media (max-width:520px) { body { font-size:15px; } }
+</style>
+</head>
+<body>
+<main>
+<h1>leandvb-GUI - Anleitung</h1>
+<p>Bedienung und Optionen des Programms <code>leandvb-GUI.py</code> (DG7NDV). Kapitel 1 beschreibt die allgemeinen Funktionen, Kapitel 2 die Optionen für die Octagon.</p>
+
+<nav>
+<ol>
+  <li><a href="#k1">Allgemeine Funktionen</a></li>
+  <li><a href="#k2">Optionen für die Octagon</a></li>
+</ol>
+</nav>
+
+<h2 id="k1">Kapitel 1: Allgemeine Funktionen</h2>
+
+<h3>Programm starten</h3>
+<p>Die Ziele legst du mit Kommandozeilen-Flags fest. Ohne Flag ist nur der lokale rtl_sdr aktiv.</p>
+<table>
+<tr><th>Flag</th><th>Wirkung</th></tr>
+<tr><td><code>-octagon</code></td><td>Octagon-Box (openATV) mit VLC als Ziel</td></tr>
+<tr><td><code>-longmynd</code></td><td>LongMynd-Receiver (WebSocket) als Ziel</td></tr>
+<tr><td><code>-longmynd2</code></td><td>zweiter LongMynd (Status-Port 4003)</td></tr>
+<tr><td><code>-longmyndp4</code></td><td>LongMynd P4 (Umschaltung per SSH-Skript)</td></tr>
+<tr><td><code>-rtlsdr</code></td><td>lokaler rtl_sdr als Ziel</td></tr>
+<tr><td><code>-conBatc</code></td><td>beim Start automatisch mit dem BATC-Server verbinden</td></tr>
+<tr><td><code>-lna</code></td><td>LNA-Anzeige in der LongMynd-Statuszeile einblenden</td></tr>
+<tr><td><code>-buttonall</code></td><td>alle optionalen Anzeigen und Knöpfe einblenden (u.a. LNA)</td></tr>
+<tr><td><code>--refreshSpektrum_per_Sekond N</code></td><td>wie oft pro Sekunde das Spektrum neu gezeichnet wird, wenn sich nur das FFT-Bild ändert (Default 3)</td></tr>
+<tr><td><code>--debug</code></td><td>ausführliche Ausgaben auf der Konsole, u.a. Auto-Verteilung und Fensteranordnung</td></tr>
+<tr><td><code>--dry-run</code></td><td>nur anzeigen, was passieren würde, nichts schalten</td></tr>
+</table>
+<pre>python3 leandvb-GUI.py -octagon -longmynd -longmynd2 -conBatc --debug</pre>
+
+<h3>BATC-Spektrum</h3>
+<p>Nach dem Verbinden zeigt das Spektrum das BATC-Band. Ein Linksklick auf ein erkanntes Signal schaltet das Ziel auf dessen Mittenfrequenz, die Taste Strg auf rtl_sdr. Mit dem Manuell-Modus stellst du eine freie Frequenz ein; sie rastet auf ein nahes bekanntes Signal ein. Das decodierte Rufzeichen steht über dem Signal, die Zusatzzeilen legst du unter <em>Konfig, Spektrum-Anzeige</em> fest.</p>
+
+<h3>Signal-Knöpfe und Ampel</h3>
+<p>Jedes erkannte Signal erscheint als Knopf je Ziel. Die Farbe zeigt den Zustand: <strong>blau</strong> heißt, dieses Ziel steht gerade darauf; <strong>grün</strong>, das Signal ist neu (weniger als 30 s); <strong>rot</strong>, das Signal ist verschwunden (weniger als 10 s); sonst normal.</p>
+
+<h3>Automatische Verteilung</h3>
+<p>Mit dem Haken <em>autom. Verteilen</em> verteilt das Programm neu gefundene Signale auf alle Ziele, deren Automatik-Haken gesetzt ist und die gerade frei sind. Ein Ziel gilt als belegt, solange darauf ein lebendes Signal steht, und auch dann, wenn es per Hand oder per Scan eingestellt wurde. Alle 5 Sekunden prüft das Programm, ob noch unversorgte Signale übrig sind, und setzt veraltete Zuordnungen zurück. Mit <code>--debug</code> erscheint auf der Konsole eine Zeile „Auto-Verteilung: …“ mit den Gründen, warum ein Ziel nichts bekommt.</p>
+
+<h3>Scan und AScan</h3>
+<p><strong>Scan</strong> fährt alle sichtbaren Signale mit diesem Ziel der Reihe nach an, wartet auf ein Rufzeichen und springt danach zurück. <strong>AScan</strong> macht dasselbe automatisch bei jedem neu aufgetauchten Signal. Bereits bekannte, frische Rufzeichen werden übersprungen.</p>
+
+<h3>Rufzeichen und Report</h3>
+<p>Das Rufzeichen-Feld unter jeder Spalte ist grün, solange gerade decodiert wird. Fehlt das Signal länger als 10 s oder meldet der BATC-Server es als verschwunden, wird das Feld klein und grau und zeigt <code>last: hh:mm:ss</code>, die Uhrzeit der letzten Erkennung. <strong>Report</strong> kopiert einen Signalbericht in die Zwischenablage. Neue Rufzeichen melden sich mit Hinweisfenster und Ton; ein Snapshot wird automatisch gespeichert, sobald das Bild steht (ausschaltbar unter <em>Statistik</em>).</p>
+
+<h3>Player</h3>
+<p>Über <strong>VLC</strong>, <strong>MPV</strong> und <strong>FFplay</strong> startest du den Videostrom des Ziels. Die Knöpfe ■ (Stopp), ⏸ (Pause) und ▶ (Start) steuern den laufenden Player. Ändert sich die Symbolrate, startet der Player hart neu, bei gleicher Rate reicht Pause und Weiter. Der Player-Watchdog startet einen abgestürzten Player wieder; er ist unter <em>Konfig</em> ein- und ausschaltbar.</p>
+
+<h3>Menü Konfig</h3>
+<ul>
+  <li><strong>Spektrum-Anzeige:</strong> Zusatzzeilen über den Signalen, Snapshot-Ordner, Rufzeichenquelle für LongMynd.</li>
+  <li><strong>Fenster-Anordnung:</strong> Monitor wählen (Standard Monitor 3), Fenster nebeneinander ohne Überlappung anordnen.</li>
+  <li><strong>Langsame GUI-Aufrufe anzeigen:</strong> Liste der Funktionen, die mehr als 40 ms im Hauptthread brauchten.</li>
+  <li><strong>GUI beenden, Octagon-Direkttuner weiterlaufen lassen:</strong> siehe Kapitel 2.</li>
+</ul>
+
+<h3>Menü Statistik</h3>
+<p>Pro Logdatei eine Auswertung: <em>Rufzeichen (signal_log)</em>, <em>Spektrum-Signale</em>, <em>Umschaltungen</em> (verteiler.log), <em>Octagon-Fehler</em> und <em>Neue Rufzeichen</em>. <em>Aktualisieren</em> lädt die Zahlen neu.</p>
+
+<h3>Logdateien</h3>
+<p>Alle Dateien liegen in <code>~/.leandvb-GUI/</code>:</p>
+<table>
+<tr><th>Datei</th><th>Inhalt</th></tr>
+<tr><td><code>signal_log.csv</code></td><td>jede Rufzeichen-Erkennung mit Frequenz, Symbolrate, MER, Provider, Codec</td></tr>
+<tr><td><code>spektrum_signale.csv</code></td><td>im Spektrum erkannte Signale mit Start und Ende</td></tr>
+<tr><td><code>verteiler.log</code></td><td>jede Umschaltung eines Ziels, plus Hinweise der Auto-Verteilung</td></tr>
+<tr><td><code>octagon_fehler.log</code></td><td>fehlgeschlagene Octagon-Umschaltungen mit Grund</td></tr>
+<tr><td><code>neue_rufzeichen.log</code></td><td>neu erkannte Rufzeichen</td></tr>
+<tr><td><code>slow_callbacks.log</code></td><td>langsame GUI-Aufrufe (über 40 ms)</td></tr>
+<tr><td><code>app_config.json</code></td><td>Einstellungen aller Ziele und Optionen</td></tr>
+</table>
+
+<h3>Weitere Werkzeuge</h3>
+<ul>
+  <li><strong>SDR-Schalter (Delock):</strong> Menüeintrag „SDR: AN/AUS“ schaltet die Steckdose des rtl_sdr über HTTP.</li>
+  <li><strong>TSA:</strong> startet die tsanalyse mit eigenem Fernsteuerport je Ziel; bei neuem Rufzeichen wird sie zurückgesetzt.</li>
+</ul>
+
+<h2 id="k2">Kapitel 2: Optionen für die Octagon</h2>
+
+<h3>Start mit der Octagon</h3>
+<pre>python3 leandvb-GUI.py -octagon --octagon-ip 192.168.20.220</pre>
+<p>Die Box muss per SSH mit Schlüssel erreichbar sein (Benutzer <code>root</code>, Standard in <code>--octagon-ssh-user</code>). Die IP ist Standard <code>192.168.20.226</code>; deine Box antwortet unter <code>192.168.20.220</code>, also gib sie beim Start an oder ändere sie in der Konfig.</p>
+
+<table>
+<tr><th>Option</th><th>Standard</th><th>Wirkung</th></tr>
+<tr><td><code>--octagon-ip</code></td><td>192.168.20.226</td><td>Adresse der Box</td></tr>
+<tr><td><code>--octagon-ssh-user</code></td><td>root</td><td>SSH-Benutzer für Rufzeichen-Abruf und Neustart</td></tr>
+<tr><td><code>--octagon-stream-port</code></td><td>8001</td><td>Stream-Port der Box für VLC</td></tr>
+<tr><td><code>--octagon-umschaltToleranz</code></td><td>100 Hz</td><td>ab welcher Abweichung neu umgeschaltet wird</td></tr>
+<tr><td><code>--no-vlc</code></td><td>aus</td><td>nur umschalten, kein VLC starten</td></tr>
+<tr><td><code>--signal-timeout</code></td><td>20 s</td><td>Wartezeit auf Signal, bevor VLC startet (0 = sofort)</td></tr>
+<tr><td><code>--vlc-http-port</code> / <code>--vlc-telnet-port</code></td><td>8082 / 4214</td><td>Schnittstellen des VLC für Steuerung und Snapshot</td></tr>
+<tr><td><code>--vlc-marquee-file</code></td><td>/tmp/vlc_marquee_octagon.txt</td><td>Einblendung im Bild</td></tr>
+</table>
+
+<h3>Normalbetrieb: Kanalliste</h3>
+<p>Im Normalbetrieb läuft die Octagon mit Enigma. Die GUI lädt die Kanalliste per OpenWebif (<code>/api/getallservices</code>) und wählt zu jeder Frequenz und Symbolrate den passenden Kanal. Umgeschaltet wird per <code>/api/zap</code>. Gibt es für eine Frequenz keinen Kanal, steht im State-Chip 60 s lang „State: Kein Kanal“, und der Eintrag landet in <code>octagon_fehler.log</code>. Bekannte Fälle liegen um 10492 bis 10494 MHz, dort fehlen Kanäle bei niedriger Symbolrate.</p>
+
+<h3>Direktmodus: freie Frequenz ohne Enigma</h3>
+<p>Im Direktmodus läuft auf der Box kein Enigma. Stattdessen stimmt das Skript <code>dvb_direct.py</code> den Satellitentuner (<code>frontend0</code>) direkt per Linux-DVB-Schnittstelle ab. Dadurch entfällt die Kanalliste, und jede Frequenz ist erreichbar.</p>
+
+<h4>Einschalten</h4>
+<ul>
+  <li><strong>Checkbox „Direkt“</strong> oben neben AScan. Beschriftung: „Direkt“ = aus, „Direkt *“ = eingeschaltet, aber die Box antwortet noch nicht, „Direkt ok“ = läuft.</li>
+  <li><strong>Kommandozeile:</strong> <code>-octagonDirektQRG</code> schaltet den Direktmodus beim Start ein, unabhängig vom gespeicherten Zustand.</li>
+</ul>
+<pre>python3 leandvb-GUI.py -octagon -longmynd -longmynd2 -conBatc -octagonDirektQRG</pre>
+
+<h4>Was beim Einschalten passiert</h4>
+<ol>
+  <li>Die GUI prüft, ob <code>dvb_direct.py</code> auf der Box schon läuft.</li>
+  <li>Falls nicht: Das Skript wird per scp nach <code>/tmp/dvb_direct.py</code> kopiert.</li>
+  <li>Die GUI stoppt Enigma (<code>init 4</code>, dann beenden) und startet das Skript als Dauerläufer mit UDP-Steuerport 55600.</li>
+  <li>Die GUI wartet, bis das Skript mit <code>PING</code> antwortet, und stimmt dann auf die aktuelle Frequenz ab.</li>
+</ol>
+
+<h4>Was danach passiert</h4>
+<ul>
+  <li>Jedes Umschalten geht über <code>TUNE &lt;MHz&gt; &lt;kS/s&gt; h</code>, egal ob Klick oder Automatik.</li>
+  <li>Der Player bekommt den UDP-Strom <code>udp://@230.0.0.9:1234</code>.</li>
+  <li>Das Rufzeichen kommt per ffprobe aus dem Strom, weil dvbsnoop ohne Enigma nicht läuft.</li>
+  <li>Lock, MER und AGC kommen aus <code>STATUS</code>.</li>
+  <li>Die Octagon-Wiederherstellung der GUI pausiert, solange der Direktmodus an ist.</li>
+</ul>
+
+<h4>Ausschalten</h4>
+<p>Die Checkbox abhaken sendet <code>STOP</code>, das Skript gibt den Tuner frei, und per SSH wird <code>init 3</code> ausgeführt, damit Enigma wieder startet. Bis das Bild der Box zurück ist, vergehen etwa 30 bis 60 Sekunden.</p>
+
+<div class="note"><strong>GUI beenden, Tuner laufen lassen:</strong> Menü <em>Konfig</em>, Eintrag „GUI beenden - Octagon-Direkttuner weiterlaufen lassen“. Das Skript bleibt auf der Box aktiv, Enigma bleibt aus, der Strom läuft weiter. Beim normalen Schließen über das Fensterkreuz wird der Tuner dagegen gestoppt.</div>
+
+<h4>Einstellungen für den Direktmodus</h4>
+<p>Sie stehen in <code>app_config.json</code>:</p>
+<table>
+<tr><th>Schlüssel</th><th>Standard</th><th>Bedeutung</th></tr>
+<tr><td><code>octagon_direct</code></td><td>false</td><td>Direktmodus an oder aus</td></tr>
+<tr><td><code>octagon_direct_script</code></td><td>/tmp/dvb_direct.py</td><td>Pfad des Skripts auf der Box</td></tr>
+<tr><td><code>octagon_direct_ctrl_port</code></td><td>55600</td><td>UDP-Steuerport des Skripts</td></tr>
+<tr><td><code>octagon_direct_udp</code></td><td>230.0.0.9:1234</td><td>Ziel des Transportstroms</td></tr>
+<tr><td><code>octagon_direct_lo</code></td><td>9540.0</td><td>LNB-Lokaloszillator in MHz</td></tr>
+<tr><td><code>octagon_direct_pol</code></td><td>h</td><td>Polarisation (h = 18 V, v = 13 V)</td></tr>
+<tr><td><code>octagon_direct_frontend</code></td><td>0</td><td>Satellitentuner der Box</td></tr>
+</table>
+
+<div class="warn"><strong>Bekannte Grenzen:</strong>
+<ul>
+  <li>Das Skript liegt in <code>/tmp</code>. Nach einem Neustart der Box ist es weg, und der Direktmodus startet nicht von selbst. Die Checkbox bleibt gesetzt; schalte sie aus und wieder ein, dann wird neu kopiert.</li>
+  <li>Polarisation ist fest auf horizontal. Für den schmalbandigen Teil von QO-100 bräuchte es vertikal.</li>
+  <li>Das Skript läuft mit <code>--minimal</code>, weil der Treiber der Box <code>DTV_PILOT</code> nicht annimmt.</li>
+  <li>Enigma und der Direktmodus dürfen nicht gleichzeitig laufen. Starte Enigma nie von Hand, solange der Direktmodus an ist.</li>
+</ul>
+</div>
+
+<h4>Testen von Hand</h4>
+<pre>ssh root@192.168.20.220
+python3 /tmp/dvb_direct.py --info
+echo -n "TUNE 10496.201 500 h" | nc -u -w1 192.168.20.220 55600
+echo -n "STATUS" | nc -u -w1 192.168.20.220 55600</pre>
+<p>Auf tesla den Strom ansehen: <code>vlc udp://@230.0.0.9:1234</code></p>
+
+</main>
+</body>
+</html>

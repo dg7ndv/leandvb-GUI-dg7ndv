@@ -1,0 +1,1 @@
+rtl_sdr -f 951437000 -s 2400000 -g 40 - | leandvb  --fastlock --inpipe 32000000 -f 2400000 --sr 1500000 --standard DVB-S2   --sampler rrc --rrc-rej 30 --roll-off 0.35   --modcods 0x0100 --framesizes 0x01   --ldpc-helper /usr/local/bin/ldpc_tool --nhelpers 6   --gui -v -d | ffplay -v 0 -

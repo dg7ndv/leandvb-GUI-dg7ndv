@@ -1,3 +1,9 @@
+# Version 0.5 (2026-11-20)
+
+Stand dieses Forks (DG7NDV): QO-100-Tuner-Switcher mit Festfenster, Web-GUI, RTL-SDR-datvRX-Dienst fuer Raspberry Pi (1-4 Sticks, mehrere Pis, MQTT),
+MultiPlayer, Spektrum-Quellen (BATC / RTL-Stick-Scan / OnAir mit SDRplay oder Pluto). Doku: `ANLEITUNG.html`, `DATV-RX-Dienst/README.md`.
+Der Spektrum-Server von HB9IIU (GPLv3) ist nicht enthalten, siehe `DATV-RX-Dienst/RTL-SDR-datvRX-Dienst/ANLEITUNG.html`.
+
 The origin of this program is at http://www.pg540.org/wiki/index.php/Grafische_interface_voor_LEANDVB
 Uploaded to GitHub at 2020-09-14
 

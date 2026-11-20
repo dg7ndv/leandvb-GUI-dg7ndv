@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=QO 100 MultiPlayer
+Comment=Player fuer die Streams des RTL-SDR-datvRX-Dienstes (DG7NDV)
+Exec=python3 multiplayer.py
+Path=@DIR@
+Icon=@DIR@/multiplayer-icon.png
+Terminal=false
+Categories=HamRadio;AudioVideo;
+StartupWMClass=Multiplayer
