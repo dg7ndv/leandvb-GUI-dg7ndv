@@ -28,6 +28,7 @@ stick_frei_nach_sekunden = 60      # Stick freigeben, wenn so lange kein Zuschau
 spektrum_server =                  # Ordner mit main_lo9540.py oder main.py; leer = kein Stick-Scan
 spektrum_korr_khz = 0              # Frequenzkorrektur des Stick-Scans in kHz (Messung: main_lo9540.py --measure-offset)
 spektrum_port = 7681               # lokaler WebSocket-Port des Servers
+spektrum_intervall_s = 600         # alle Sticks belegt: so oft (s) wird der hoechste Stick kurz fuer einen Scan genommen (0 = nur einmal)
 
 # --- Netzwerk -----------------------------------------------------------------------------------------------
 http_port = 8554                   # Webseite, Playlist /qo100.m3u und HTTP-Stream (VLC)

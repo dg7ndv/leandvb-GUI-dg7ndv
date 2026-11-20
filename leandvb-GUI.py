@@ -18012,20 +18012,12 @@ def _spo_recal():
 _spq_var = tk.StringVar(value="batc")
 _menu_spq = tk.Menu(_menubar, tearoff=False)
 _menubar.add_cascade(label="Spektrum", menu=_menu_spq)
-for _v, _t in (("batc", "BATC-Server (Standard)"), ("stick", "RTL-Stick-Scan (HB9IIU-Server)"), ("auto", "Auto: BATC, bei Ausfall RTL-Stick-Scan"),
-               ("onair", "OnAir (SDRplay A, 2 Durchlaeufe)"), ("onair_pluto", "OnAir (PlutoSDR, 1 Durchlauf)")):
+# Nur diese zwei Quellen im Menue (Auto/OnAir-Code unten bleibt als ungenutzter Baustein erhalten, siehe CLAUDE.md)
+for _v, _t in (("batc", "BATC-Server (Standard)"), ("stick", "RTL-Stick-Scan")):
     _menu_spq.add_radiobutton(label=_t, value=_v, variable=_spq_var, command=lambda: _spq_set(_spq_var.get()))
-_menu_spq.add_separator()
 _spo_pegel_var = tk.StringVar(value=str(app_config.get("spektrum_onair_pegel") or "fest"))
-def _spo_pegel_set():
-    app_config["spektrum_onair_pegel"] = _spo_pegel_var.get()
-    app_config_save()
-    olog("Spektrum (OnAir) Pegel: %s." % ("automatisch nachregeln" if _spo_pegel_var.get() == "auto" else "einmal abgleichen, dann fest"))
-_menu_spq.add_radiobutton(label="OnAir-Pegel: einmal abgleichen (fest)", value="fest", variable=_spo_pegel_var, command=_spo_pegel_set)
-_menu_spq.add_radiobutton(label="OnAir-Pegel: automatisch nachregeln", value="auto", variable=_spo_pegel_var, command=_spo_pegel_set)
-_menu_spq.add_command(label="OnAir-Pegel jetzt neu abgleichen", command=lambda: _spo_recal())
 _spq["mode"] = str(app_config.get("spektrum_quelle") or "batc")
-if _spq["mode"] not in ("batc", "stick", "auto", "onair", "onair_pluto"):
+if _spq["mode"] not in ("batc", "stick"):          # Auto/OnAir sind nicht (mehr) im Menue
     _spq["mode"] = "batc"
 _spq_var.set(_spq["mode"])
 root.after(5000, _spq_tick)

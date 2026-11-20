@@ -70,6 +70,7 @@ ap.add_argument("--mcast2", default=cfg("multicast2", str, None), help="Multicas
 ap.add_argument("--sticks", default=cfg("sticks", str, None), help="RTL-Sticks: 'auto' = beim Start am USB-Bus suchen (bis 10), oder Liste (Nummer/Seriennummer, Komma); leer = stick_nr/stick2_nr")
 ap.add_argument("--spek-server", default=cfg("spektrum_server", str, None) or "", help="Ordner des RTL-SDR-Spektrum-Servers von HB9IIU (Ersatz, wenn der BATC-Server ausfaellt); leer = aus")
 ap.add_argument("--spek-korr-khz", type=float, default=cfg("spektrum_korr_khz", float, 0.0))
+ap.add_argument("--spek-intervall", type=int, default=cfg("spektrum_intervall_s", int, 600))
 ap.add_argument("--spek-port", type=int, default=cfg("spektrum_port", int, 7681))
 ap.add_argument("--bake-wait", type=int, default=cfg("bake_sekunden_je_versuch", int, 25), help="Bake-Pruefung beim Start: Sekunden je Versuch (3 Versuche)")
 ap.add_argument("--cpu-warn", type=float, default=cfg("cpu_warnung_prozent", float, 80.0), help="Warnung im Browser (und MQTT), wenn die Rechenzeit ueber 20 s darueber liegt (%%)")
@@ -153,7 +154,7 @@ sys.path.insert(0, PARENT)
 sys.argv = [os.path.join(PARENT, "zapper.py"), "--http", str(A.http), "--mobile-port", str(A.mobile_port), "--mcast", A.mcast, "--port", str(A.port),
             "--dwell", str(A.dwell), "--idle", str(A.idle), "--dvx-dir", PARENT, "--bake-wait", str(A.bake_wait), "--cpu-warn", str(A.cpu_warn)]
 if A.spek_server:
-    sys.argv += ["--spek-server", A.spek_server, "--spek-korr-khz", str(A.spek_korr_khz), "--spek-port", str(A.spek_port)]
+    sys.argv += ["--spek-server", A.spek_server, "--spek-korr-khz", str(A.spek_korr_khz), "--spek-port", str(A.spek_port), "--spek-intervall", str(A.spek_intervall)]
 if A.lo:
     sys.argv += ["--lo", str(A.lo)]
 if A.ppm is not None:

@@ -49,3 +49,5 @@ DATV-RX-Dienst/*.csv
 DATV-RX-Dienst/bak/
 *.vor_*
 DATVision/
+repo_raspi5/
+push_raspi5.sh

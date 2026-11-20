@@ -43,6 +43,7 @@ ap.add_argument("--index2", help="zweiter RTL-Stick (RTL2): Nummer oder Seriennu
 ap.add_argument("--mcast2", help="UDP-Multicast-Adresse des zweiten Sticks (Standard: Adresse des ersten, letzte Stelle + 1)")
 ap.add_argument("--spek-server", default="", help="Ordner des RTL-SDR-Spektrum-Servers von HB9IIU (main_lo9540.py oder main.py; separat installieren, GPLv3). Leer = kein Stick-Scan als Spektrum-Ersatz")
 ap.add_argument("--spek-korr-khz", type=float, default=0.0, help="Frequenzkorrektur des Stick-Scans in kHz (siehe Doku des Servers, --correction-khz)")
+ap.add_argument("--spek-intervall", type=int, default=600, help="Stick-Scan, wenn alle Sticks belegt sind: so oft (Sekunden) wird der hoechste Stick kurz fuer einen Scan genommen (0 = nur einmal)")
 ap.add_argument("--spek-port", type=int, default=7681, help="WebSocket-Port des Spektrum-Servers (nur lokal)")
 ap.add_argument("--auto-scan", default="ja", choices=("ja", "nein"), help="Auto-Scan beim ersten Start (danach gilt der Schalter auf der Webseite)")
 ap.add_argument("--title", default="DG7NDV", help="Name/Rufzeichen in der Kopfzeile der Webseite")
@@ -2498,6 +2499,8 @@ class SpekStick:
     def __init__(s):
         s.proc, s.zp, s.ws_gen, s.status = None, None, 0, ""
         s.t0 = time.time()
+        s.frame_n = 0                 # Zahl der Bilder seit dem Start des Servers
+        s.kurz_busy, s.kurz_t, s.kurz_name = False, 0.0, ""      # kurzer Scan laeuft / Zeit des letzten / auf welchem Stick
 
     @staticmethod
     def verfuegbar():
@@ -2521,11 +2524,8 @@ class SpekStick:
                 return q
         return None
 
-    def start(s):
-        q = s.frei_stick()
-        if q is None:
-            s.status = "kein freier Stick"
-            return
+    def popen_server(s, q):
+        """Spektrum-Server auf Stick q starten; True bei Erfolg"""
         py = os.path.join(os.path.dirname(os.path.abspath(__file__)), "spektrum_stick.py")
         cmd = [sys.executable, py, "--server", os.path.expanduser(A.spek_server), "--device", str(q.index), "--lo", str(A.lo or 9540.0),
                "--korr-khz", str(A.spek_korr_khz), "--port", str(A.spek_port)]
@@ -2533,14 +2533,78 @@ class SpekStick:
             s.proc = subprocess.Popen(cmd, stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         except OSError as e:
             s.status = "Start fehlgeschlagen: %s" % e
-            return
+            return False
         q.hold = True
         s.zp = q
+        s.frame_n = 0
         s.ws_gen += 1
         threading.Thread(target=s.ws_loop, args=(s.ws_gen,), daemon=True).start()
+        return True
+
+    def start(s):
+        q = s.frei_stick()
+        if q is None:
+            return False
+        if not s.popen_server(q):
+            return True
         s.status = "Stick-Scan auf %s" % q.name
         SPEC["quelle_aktiv"] = "stick"
         print("%s  Spektrum: BATC ohne Daten - Stick-Scan auf %s gestartet" % (time.strftime("%H:%M:%S"), q.name), flush=True)
+        return True
+
+    def kurz_scan(s):
+        """Alle Sticks belegt: der hoechste Stick wird kurz fuer EINEN Spektrum-Durchlauf genommen, das Bild bleibt stehen, danach
+        bekommt der Stick seine alte Aufgabe zurueck (Frequenz, Symbolrate, Festhalten)"""
+        s.kurz_busy = True
+        q = next((z for z in reversed(zaps) if z.index is not None), None)
+        if q is None:
+            s.kurz_busy = False
+            return
+        prev = (q.cur, q.pin, q.manual, q.hold)
+        s.status = "kurzer Scan (%s)" % q.name
+        SPEC["quelle_aktiv"] = "stick"
+        print("%s  Spektrum: alle Sticks belegt - kurzer Scan auf %s (danach zurueck auf %s)" % (
+            time.strftime("%H:%M:%S"), q.name, label(*prev[0]) if prev[0] else "frei"), flush=True)
+        ok = False
+        try:
+            q.hold = True
+            q.release()
+            if s.popen_server(q):
+                t0 = time.time()
+                while time.time() - t0 < 60 and s.frame_n < 1 and s.proc is not None and s.proc.poll() is None:
+                    time.sleep(0.3)
+                ok = s.frame_n >= 1
+        finally:
+            s.ws_gen += 1
+            if s.proc and s.proc.poll() is None:
+                s.proc.terminate()
+                try:
+                    s.proc.wait(5)
+                except subprocess.TimeoutExpired:
+                    s.proc.kill()
+            s.proc, s.zp = None, None
+            time.sleep(1.5)                                             # Stick freigeben lassen
+            q.hold = prev[3]
+            if prev[0]:
+                try:
+                    if q.tune(prev[0][0], prev[0][1], manual=prev[2]):
+                        q.pin = prev[1]
+                except Exception as e:
+                    print("kurzer Scan: Stick %s nicht zurueckgestellt: %s" % (q.name, e), flush=True)
+            s.kurz_t, s.kurz_name = time.time(), q.name
+            s.status = "" if ok else "kurzer Scan ohne Bild (%s)" % q.name
+            s.kurz_busy = False
+            print("%s  Spektrum: kurzer Scan %s, %s wieder %s" % (time.strftime("%H:%M:%S"), "fertig" if ok else "ohne Bild", q.name,
+                                                                  label(*prev[0]) if prev[0] else "frei"), flush=True)
+
+    def quelle_txt(s):
+        if SPEC.get("quelle_aktiv") != "stick":
+            return "BATC"
+        if s.kurz_busy:
+            return "kurzer Scan (%s)" % (s.zp.name if s.zp else s.kurz_name or "?")
+        if s.proc is None and s.kurz_t:
+            return "Stick-Scan, Bild von %s (kurzer Scan %s)" % (time.strftime("%H:%M", time.localtime(s.kurz_t)), s.kurz_name)
+        return "Stick-Scan (%s)" % (s.zp.name if s.zp else "?")
 
     def stop(s, grund=""):
         s.ws_gen += 1
@@ -2567,6 +2631,7 @@ class SpekStick:
                 vals = struct.unpack("<922H", msg)
                 w.analyze(vals)
                 SPEC["live"], SPEC["live_t"] = vals, time.time()
+                s.frame_n += 1
             try:
                 websocket.WebSocketApp("ws://127.0.0.1:%d" % A.spek_port, subprotocols=["fft_fast"], on_message=on_msg).run_forever(ping_interval=15, ping_timeout=8)
             except Exception:
@@ -2581,10 +2646,19 @@ class SpekStick:
             time.sleep(2)
             try:
                 want = s.wunsch()
+                if s.kurz_busy:
+                    continue
                 if want and (s.proc is None):
-                    s.start()
+                    if not s.start():                                   # kein freier Stick: alle 4 belegt -> kurzer Scan auf dem hoechsten Stick
+                        if not s.kurz_t or (A.spek_intervall > 0 and time.time() - s.kurz_t > A.spek_intervall):
+                            threading.Thread(target=s.kurz_scan, daemon=True).start()
+                        else:
+                            SPEC["quelle_aktiv"] = "stick"
                 elif not want and s.proc is not None:
                     s.stop()
+                elif not want and SPEC.get("quelle_aktiv") == "stick":      # BATC wieder da / auf BATC gestellt: Bild wieder von BATC
+                    SPEC["quelle_aktiv"] = "batc"
+                    s.status = ""
                 elif s.proc is not None and s.proc.poll() is not None:
                     s.stop("Server beendet - Stick frei")
                 if s.proc is None and SPEC.get("quelle_aktiv") != "stick":
@@ -2623,7 +2697,7 @@ def spec_json(mode):
     db = [round(10.0 * math.log10(v if v > 0 else 1), 1) for v in vals] if vals else []
     return {"start": w.START, "bw": w.BW_MHZ, "db": db, "t": time.strftime("%H:%M:%S", time.localtime(t)) if t else "", "mode": mode,
             "why": SPEC["why"] if mode != "live" else "Echtzeit", "sig": sigs,
-            "quelle": ("Stick-Scan (%s)" % spek_stick.zp.name) if SPEC.get("quelle_aktiv") == "stick" and spek_stick.zp else "BATC", "quelle_status": spek_stick.status, "quelle_modus": settings.get("spektrum_quelle", "auto")}
+            "quelle": spek_stick.quelle_txt(), "quelle_status": spek_stick.status, "quelle_modus": settings.get("spektrum_quelle", "auto")}
 
 
 def ws_loop():
