@@ -112,12 +112,12 @@
 <h2 id="k2">Kapitel 2: Optionen für die Octagon</h2>
 
 <h3>Start mit der Octagon</h3>
-<pre>python3 leandvb-GUI.py -octagon --octagon-ip 192.168.20.220</pre>
-<p>Die Box muss per SSH mit Schlüssel erreichbar sein (Benutzer <code>root</code>, Standard in <code>--octagon-ssh-user</code>). Die IP ist Standard <code>192.168.20.226</code>; deine Box antwortet unter <code>192.168.20.220</code>, also gib sie beim Start an oder ändere sie in der Konfig.</p>
+<pre>python3 leandvb-GUI.py -octagon --octagon-ip 192.168.0.220</pre>
+<p>Die Box muss per SSH mit Schlüssel erreichbar sein (Benutzer <code>root</code>, Standard in <code>--octagon-ssh-user</code>). Die IP ist Standard <code>192.168.0.226</code>; deine Box antwortet unter <code>192.168.0.220</code>, also gib sie beim Start an oder ändere sie in der Konfig.</p>
 
 <table>
 <tr><th>Option</th><th>Standard</th><th>Wirkung</th></tr>
-<tr><td><code>--octagon-ip</code></td><td>192.168.20.226</td><td>Adresse der Box</td></tr>
+<tr><td><code>--octagon-ip</code></td><td>192.168.0.226</td><td>Adresse der Box</td></tr>
 <tr><td><code>--octagon-ssh-user</code></td><td>root</td><td>SSH-Benutzer für Rufzeichen-Abruf und Neustart</td></tr>
 <tr><td><code>--octagon-stream-port</code></td><td>8001</td><td>Stream-Port der Box für VLC</td></tr>
 <tr><td><code>--octagon-umschaltToleranz</code></td><td>100 Hz</td><td>ab welcher Abweichung neu umgeschaltet wird</td></tr>
@@ -185,10 +185,10 @@
 </div>
 
 <h4>Testen von Hand</h4>
-<pre>ssh root@192.168.20.220
+<pre>ssh root@192.168.0.220
 python3 /tmp/dvb_direct.py --info
-echo -n "TUNE 10496.201 500 h" | nc -u -w1 192.168.20.220 55600
-echo -n "STATUS" | nc -u -w1 192.168.20.220 55600</pre>
+echo -n "TUNE 10496.201 500 h" | nc -u -w1 192.168.0.220 55600
+echo -n "STATUS" | nc -u -w1 192.168.0.220 55600</pre>
 <p>Auf tesla den Strom ansehen: <code>vlc udp://@230.0.0.9:1234</code></p>
 
 </main>

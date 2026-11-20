@@ -382,7 +382,7 @@ trap '
     fi
 ' EXIT INT TERM
 
-nc -lu 192.168.20.204 "$PORT" | awk -F',' \
+nc -lu 192.168.0.204 "$PORT" | awk -F',' \
     -v port="$PORT" \
     -v pidfile="$VLC_PIDFILE" \
     -v reload_script="$RELOAD_SCRIPT" \

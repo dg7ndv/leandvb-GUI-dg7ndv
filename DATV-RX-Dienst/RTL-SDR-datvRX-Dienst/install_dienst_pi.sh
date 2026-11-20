@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # install_dienst_pi.sh - RTL-SDR-datvRX-Dienst auf einem Raspberry Pi installieren, aktualisieren, pruefen, entfernen (DG7NDV)
 #
-# Aufruf:  ./install_dienst_pi.sh [user@host | host] [Optionen]   Standard-Ziel: pi@192.168.20.10 (Hauspi); jede andere IP/Name und jeder Benutzer geht
+# Aufruf:  ./install_dienst_pi.sh [user@host | host] [Optionen]   Standard-Ziel: pi@192.168.0.10 (Hauspi); jede andere IP/Name und jeder Benutzer geht
 #                                                                  (ohne "user@" gilt --user, Standard pi). Voraussetzung: Anmeldung per SSH-Schluessel ohne Passwort.
 #   (ohne Option)   Quellcode auf den Pi kopieren, Abhaengigkeiten pruefen, systemd-Dienst "datvrx-dienst" anlegen.
 #                   Der Dienst wird NICHT aktiviert und NICHT gestartet (kein Start beim Booten, kein Start jetzt).
@@ -11,7 +11,7 @@
 #   --key DATEI     anderen SSH-Schluessel benutzen (ssh -i)       --port N   anderer SSH-Port       --user NAME   Benutzer, wenn keiner im Ziel steht
 #   --lo MHZ        LNB-Oszillator dieses Ziels (z.B. 9540.054) ) werden in die dienst.conf auf dem Ziel eingetragen - noetig, wenn der Pi
 #   --ppm N         Frequenzkorrektur des Sticks               ) an einem anderen LNB/Stick haengt (spaeter dort auch von Hand aenderbar)
-#   --mqtt HOST     MQTT-Broker fuer den Dienst (Standard der Vorlage: 192.168.20.10:1883 = Mosquitto auf dem Hauspi), wird in die dienst.conf eingetragen
+#   --mqtt HOST     MQTT-Broker fuer den Dienst (Standard der Vorlage: 192.168.0.10:1883 = Mosquitto auf dem Hauspi), wird in die dienst.conf eingetragen
 # Konfiguration auf dem Ziel: ~/datvrx-dienst/RTL-SDR-datvRX-Dienst/dienst.conf (aus dienst.conf.beispiel; wird bei Updates NIE ueberschrieben)
 #   --mqtt-prefix P Themen-Prefix in der dienst.conf (%h = Hostname des Pis, Vorlage: qo100/dienst/%h) - je Pi eindeutig, sonst stoeren sich mehrere Pis am Broker
 #   --no-apt        fehlende Pakete (python3-numpy, paho-mqtt, websocket-client) nicht per apt nachinstallieren
@@ -27,7 +27,7 @@
 # weil das datvrx dieses PCs (x86) auf dem Pi nicht laeuft. Selbst bauen: siehe arm/BAUEN.html.
 set -eu
 HERE="$(cd "$(dirname "$0")" && pwd)"; PARENT="$(dirname "$HERE")"; DVN="$(dirname "$PARENT")/DATVision"
-ZIEL=192.168.20.10; USERN=pi; ENABLE=0; START=0; MQTT=""; MQPRE=""; APT=1; TEST=1; ACTION=install; KEY=""; PORT=""; LO=""; PPM=""
+ZIEL=192.168.0.10; USERN=pi; ENABLE=0; START=0; MQTT=""; MQPRE=""; APT=1; TEST=1; ACTION=install; KEY=""; PORT=""; LO=""; PPM=""
 if [ $# -gt 0 ] && [[ $1 != --* ]]; then ZIEL=$1; shift; fi
 while [ $# -gt 0 ]; do
     case "$1" in

@@ -74,9 +74,9 @@ _argp = argparse.ArgumentParser(
     epilog="Beispiele:\n"
            "  ./leandvb-GUI.py                         # nur lokaler rtl_sdr (Schritt 1)\n"
            "  ./leandvb-GUI.py -octagon                # BATC-Klick schaltet die Octagon-Box + VLC\n"
-           "  ./leandvb-GUI.py -octagon --octagon-ip 192.168.20.226\n"
-           "  ./leandvb-GUI.py -longmynd               # BATC-Klick sendet an LongMynd (192.168.20.103)\n"
-           "  ./leandvb-GUI.py -longmynd --longmynd-ip 192.168.20.103 --longmynd-port 8080\n"
+           "  ./leandvb-GUI.py -octagon --octagon-ip 192.168.0.226\n"
+           "  ./leandvb-GUI.py -longmynd               # BATC-Klick sendet an LongMynd (192.168.0.103)\n"
+           "  ./leandvb-GUI.py -longmynd --longmynd-ip 192.168.0.103 --longmynd-port 8080\n"
            "  ./leandvb-GUI.py -longmynd -longmynd2    # zweiter LongMynd (Default 127.0.0.1:8080)\n"
            "  ./leandvb-GUI.py -datvrx1                # nur der neue Empfaenger RTL-SDR-datvRX1 (RTL-Stick 0, datvrx)\n"
            "  ./leandvb-GUI.py -datvrx1 -datvrx2       # zwei Sticks: Stick 1 -> datvRX1, Stick 2 -> datvRX2 (Zuordnung beim Start per USB-Suche)\n"
@@ -102,11 +102,11 @@ _argp.add_argument("-buttonall", action="store_true", help="Alle optionalen Anze
 _argp.add_argument("-octagon", action="store_true", help="Octagon-Box (openATV) + VLC als Ziel aktivieren")
 _argp.add_argument("-longmynd", action="store_true", help="LongMynd-Receiver (WebSocket) als Ziel aktivieren")
 _argp.add_argument("-rtlsdr", action="store_true", help="RTL-SDR-LeanDVB (lokaler rtl_sdr | leandvb) als Ziel aktivieren (zusaetzlich zu -octagon/-longmynd/-datvrxN; ohne jedes Flag ist er automatisch aktiv)")
-_argp.add_argument("--octagon-ip", default="192.168.20.226", help="IP/Host der Octagon-Box (Default 192.168.20.226)")
+_argp.add_argument("--octagon-ip", default="192.168.0.226", help="IP/Host der Octagon-Box (Default 192.168.0.226)")
 _argp.add_argument("--octagon-ssh-user", default="root",
                     help="SSH-User fuer den Rufzeichen-Abruf per dvbsnoop auf der Octagon-Box (Default root)")
 _argp.add_argument("--octagon-stream-port", type=int, default=8001, help="Stream-Port der Box fuer VLC (Default 8001)")
-_argp.add_argument("--longmynd-ip", default="192.168.20.103", help="IP des LongMynd-Receivers (Default 192.168.20.103)")
+_argp.add_argument("--longmynd-ip", default="192.168.0.103", help="IP des LongMynd-Receivers (Default 192.168.0.103)")
 _argp.add_argument("--longmynd-port", type=int, default=8080, help="WebSocket-Port des LongMynd-Receivers (Default 8080)")
 _argp.add_argument("--longmynd-stream-ip", default="230.0.0.3", help="Multicast-IP des LongMynd-Videostreams (Default 230.0.0.3)")
 _argp.add_argument("--longmynd-stream-port", type=int, default=1234, help="Multicast-Port des LongMynd-Videostreams (Default 1234)")
@@ -169,14 +169,14 @@ _argp.add_argument("-longmynd2", action="store_true",
                          "Konfigdatei (app_config.json, Eintrag 'longmynd2' unter 'tuners')")
 _argp.add_argument("-longmyndp4", action="store_true",
                     help="LongMynd-P4-Receiver (zweiter Pi, Tuning per SSH) als zusaetzliches Ziel aktivieren")
-_argp.add_argument("--longmyndp4-ssh-host", default="192.168.20.242",
-                    help="IP/Host des LongMynd-P4-Pi (Default 192.168.20.242)")
+_argp.add_argument("--longmyndp4-ssh-host", default="192.168.0.242",
+                    help="IP/Host des LongMynd-P4-Pi (Default 192.168.0.242)")
 _argp.add_argument("--longmyndp4-ssh-user", default="pi",
                     help="SSH-User fuer den LongMynd-P4-Pi (Default pi)")
 _argp.add_argument("--longmyndp4-remote-script", default="~/rx_udp.sh",
                     help="Pfad zum Tuning-Script auf dem LongMynd-P4-Pi (Default ~/rx_udp.sh, "
                          "aufgerufen als '<script> <Downlink-MHz> <SR-kHz>')")
-# LongMynd P4: derselbe Pi wie --longmyndp4-ssh-host (Default 192.168.20.242), aber per SSH
+# LongMynd P4: derselbe Pi wie --longmyndp4-ssh-host (Default 192.168.0.242), aber per SSH
 # als dg7ndv eingeloggt (nicht root - root ist nur fuer die Octagon-Box), auf dem vor jedem
 # Tuning-Kommando '/home/dg7ndv/stop.sh' und beim Beenden des Programms
 # '/home/dg7ndv/start.sh' aufgerufen wird. Beim Start prueft die GUI
@@ -187,11 +187,11 @@ _argp.add_argument("--longmyndp4-remote-script", default="~/rx_udp.sh",
 #             sudo pkill rpidatvgui
 #             sudo pkill -f "scheduler.sh|bandview|langstone|siggen"
 #   start.sh: sudo systemctl start getty@tty1
-_argp.add_argument("--longmyndp4-stop-ssh-host", default="192.168.20.242",
+_argp.add_argument("--longmyndp4-stop-ssh-host", default="192.168.0.242",
                     help="IP/Host, auf dem vor jedem LongMynd-P4-Tuning-Kommando per SSH das "
                          "Stop-Script und beim Beenden das Start-Script aufgerufen wird - "
                          "derselbe Pi wie --longmyndp4-ssh-host, als dg7ndv "
-                         "eingeloggt (Default 192.168.20.242)")
+                         "eingeloggt (Default 192.168.0.242)")
 _argp.add_argument("--longmyndp4-stop-ssh-user", default="dg7ndv",
                     help="SSH-User fuer --longmyndp4-stop-ssh-host (Default dg7ndv - root ist "
                          "nur fuer die Octagon-Box)")
@@ -842,7 +842,7 @@ def app_config_default():
         "onair_app_bin": "",           # Programm des OnAir-Fensters (leer = onair/dect2 im PATH suchen)        # ohne AutoBW: --bw = Symbolrate x Faktor (500 kS -> 0,7 MHz)
         # Schaltbare Steckdose fuer den SDR (Delock mit Tasmota-Firmware): HTTP-Kommando
         # <url>/cm?cmnd=Power%20On|Off|Toggle ; "topic" ist nur der MQTT-Name (Info, wird nicht benoetigt)
-        "sdr_power_url": "http://192.168.20.130",
+        "sdr_power_url": "http://192.168.0.130",
         "sdr_power_topic": "delock4",
         # Octagon-Direktmodus: Box ohne Enigma als frei abstimmbarer Tuner (dvb_direct.py laeuft
         # dort als Dauerlaeufer und nimmt per UDP "TUNE <MHz> <kS/s>" entgegen). Damit entfaellt
@@ -887,7 +887,7 @@ def app_config_default():
              # wird bei Bedarf per Startskript in eigenem Terminal gestartet; "extern" = anderer Rechner
              "modus": "lokal",
              "lokal_ip": "127.0.0.1", "lokal_port": 8080,
-             "extern_ip": "192.168.20.103", "extern_port": 8081,
+             "extern_ip": "192.168.0.103", "extern_port": 8081,
              "lokal_autostart": True,
              "lokal_dir": "/home/dg7ndv/sdr/ur8us_longmynd", "lokal_script": "start_longmynd2.sh"},
             {"typ": "longmynd_p4", "ip": cliargs.longmyndp4_ssh_host, "port": "",
@@ -7473,7 +7473,7 @@ def _longmyndp4_process_running():
 def _longmyndp4_send_stop():
     """Wird vor jedem LongMynd-P4-Tuning-Kommando aufgerufen: schickt per SSH ein Stop-Kommando
     an denselben LongMynd-P4-Pi wie --longmyndp4-ssh-host, als dg7ndv
-    (Default dg7ndv@192.168.20.242 '/home/dg7ndv/stop.sh')."""
+    (Default dg7ndv@192.168.0.242 '/home/dg7ndv/stop.sh')."""
     host = cliargs.longmyndp4_stop_ssh_host
     user = cliargs.longmyndp4_stop_ssh_user
     script = cliargs.longmyndp4_stop_script
@@ -7497,7 +7497,7 @@ def _longmyndp4_send_stop():
 def _longmyndp4_send_start():
     """Wird beim Beenden des Programms aufgerufen (Gegenstueck zu _longmyndp4_send_stop):
     schickt per SSH ein Start-Kommando an denselben LongMynd-P4-Pi, als dg7ndv
-    (Default dg7ndv@192.168.20.242 '/home/dg7ndv/start.sh')."""
+    (Default dg7ndv@192.168.0.242 '/home/dg7ndv/start.sh')."""
     host = cliargs.longmyndp4_stop_ssh_host
     user = cliargs.longmyndp4_stop_ssh_user
     script = cliargs.longmyndp4_start_script
@@ -11745,7 +11745,7 @@ def _dvs_dialog():
     frm = ttk.Frame(win, padding=10)
     frm.pack(fill="both", expand=True)
     cur = next((e for e in (app_config.get("datvrx_receivers") or []) if e.get("source") == "dienst"), {})
-    srv = tk.StringVar(value=app_config.get("dienst_server") or cur.get("server") or "192.168.20.102:8554")
+    srv = tk.StringVar(value=app_config.get("dienst_server") or cur.get("server") or "192.168.0.102:8554")
     ttk.Label(frm, text="Dienst (Pi) HOST:PORT:").grid(row=0, column=0, sticky="w")
     ent_srv = ttk.Entry(frm, textvariable=srv, width=26)
     ent_srv.grid(row=0, column=1, sticky="w", padx=4)
@@ -12728,7 +12728,7 @@ def _lm2_menu_refresh():
     _lm2_auto_var.set(bool(t.get("lokal_autostart", True)))
     _menu_lm2.entryconfigure(0, label="Lokal (%s:%s, Startskript %s)" % (t.get("lokal_ip", "127.0.0.1"),
                              t.get("lokal_port", 8080), t.get("lokal_script", "start_longmynd2.sh")))
-    _menu_lm2.entryconfigure(1, label="Extern (%s:%s)" % (t.get("extern_ip", "192.168.20.103"), t.get("extern_port", 8081)))
+    _menu_lm2.entryconfigure(1, label="Extern (%s:%s)" % (t.get("extern_ip", "192.168.0.103"), t.get("extern_port", 8081)))
 def _lm2_modus_set():
     t = _lm2_entry()
     if t is None:

@@ -135,7 +135,7 @@ def still_there(freq):
         return any(abs(st["freq"] - freq) <= SIG_TOL and st["gone_since"] is None for st in state.values())
 
 
-LM_HOST = "192.168.20.103:8080"
+LM_HOST = "192.168.0.103:8080"
 MODCOD = {1: "QPSK 1/4", 2: "QPSK 1/3", 3: "QPSK 2/5", 4: "QPSK 1/2", 5: "QPSK 3/5", 6: "QPSK 2/3", 7: "QPSK 3/4",
           8: "QPSK 4/5", 9: "QPSK 5/6", 10: "QPSK 8/9", 11: "QPSK 9/10", 12: "8PSK 3/5", 13: "8PSK 2/3", 14: "8PSK 3/4",
           15: "8PSK 5/6", 16: "8PSK 8/9", 17: "8PSK 9/10"}

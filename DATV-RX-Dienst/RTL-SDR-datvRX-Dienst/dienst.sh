@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # dienst.sh - RTL-SDR-datvRX-Dienst starten/stoppen/pruefen (DG7NDV)
-# Aufruf:  ./dienst.sh start|stop|restart|status|log        (Optionen fuer das Programm in DIENST_OPT, z.B. DIENST_OPT="--mqtt 192.168.20.10")
+# Aufruf:  ./dienst.sh start|stop|restart|status|log        (Optionen fuer das Programm in DIENST_OPT, z.B. DIENST_OPT="--mqtt 192.168.0.10")
 DIR="$(cd "$(dirname "$0")" && pwd)"; LOG=/tmp/qo100_datvrx_dienst.log; PID=/tmp/qo100_datvrx_dienst.pid
 IP=$(ip -4 -o addr show | awk '/192\.168\.20\./{print $4}' | cut -d/ -f1 | head -1); IP=${IP:-localhost}
 up() { curl -s -m 2 -o /dev/null http://127.0.0.1:8554/status; }

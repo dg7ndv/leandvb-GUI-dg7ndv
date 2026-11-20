@@ -1,12 +1,12 @@
 #!/bin/bash
 # dvbs_rx_service_stick_log.sh - alle Logs/Stati rund um die RTL-SDR-Sticks am Pi (RTL-SDR-datvRX-Dienst) auf einmal ausgeben.
 # Aufruf: ./dvbs_rx_service_stick_log.sh [-p PI-IP] [-n ZEILEN] [-s ssh-Ziel] [-o DATEI] [-g]
-#   -p  IP des Pi (Standard 192.168.20.102)      -n  Zeilen je Abschnitt (Standard 40)
+#   -p  IP des Pi (Standard 192.168.0.102)      -n  Zeilen je Abschnitt (Standard 40)
 #   -s  ssh-Ziel (Standard dg7ndv@<IP>)           -o  Ausgabe zusaetzlich in diese Datei schreiben
 #   -g  auch das GUI-Log des PCs (~/.leandvb-GUI/gui.log) ausgeben
 # Abschnitte: Stick-Status, USB-Geraete, USB-Fehler im Kernel-Log (mit Uhrzeit), Unterspannung, Dienst (systemd/journal), Verteil-Protokoll,
 #             Fehlerbericht des Dienstes, rtl_test-Liste, optional GUI-Log.
-PI=192.168.20.102; N=40; ZIEL=""; OUT=""; GUI=0
+PI=192.168.0.102; N=40; ZIEL=""; OUT=""; GUI=0
 while getopts "p:n:s:o:gh" o; do case $o in p) PI=$OPTARG;; n) N=$OPTARG;; s) ZIEL=$OPTARG;; o) OUT=$OPTARG;; g) GUI=1;; *) sed -n '2,9p' "$0"; exit 0;; esac; done
 ZIEL=${ZIEL:-dg7ndv@$PI}
 HIER=$(cd "$(dirname "$(readlink -f "$0")")" && pwd)

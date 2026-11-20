@@ -12,8 +12,8 @@
 # Beispiel Bake:  ./octagon_direkt.sh start 10491.5 1500 h
 # Strom ansehen:  vlc udp://@230.0.0.9:1234
 #
-# Anpassen per Umgebungsvariable, z.B.  BOX=192.168.20.226 ./octagon_direkt.sh start
-BOX=${BOX:-192.168.20.220}
+# Anpassen per Umgebungsvariable, z.B.  BOX=192.168.0.226 ./octagon_direkt.sh start
+BOX=${BOX:-192.168.0.220}
 PORT=${PORT:-55600}
 LO=${LO:-9540}
 UDP=${UDP:-230.0.0.9:1234}

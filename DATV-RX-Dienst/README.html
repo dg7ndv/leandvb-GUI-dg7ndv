@@ -12,7 +12,7 @@
 <tr><td><b>Zapper</b> (<code>zapper.py</code>, einzeln am PC) und <b>Wächter</b> (<code>qo100_wacht.py</code>, <code>waechter_mqtt.py</code>)</td><td>VLC-Zapper am PC, Protokoll der Signale, MQTT-Wächter am Hauspi (dieser Text unten)</td><td><a href="ANLEITUNG_zapper.html">ANLEITUNG_zapper.html</a></td></tr>
 <tr><td><code>dienst_client.py</code>, <code>datv_core.py</code>, <code>signal_da.py</code></td><td>gemeinsame Bausteine (API-Client, MER/Rufzeichen/Pegel)</td><td>im Quelltext</td></tr></table>
 <h2>Läuft auf</h2>
-<p>Hauspi <code>pi@192.168.20.10</code>, Dienst <code>qo100-waechter</code> (systemd), Broker <code>127.0.0.1:1883</code> dort (Mosquitto im Docker, anonym).</p>
+<p>Hauspi <code>pi@192.168.0.10</code>, Dienst <code>qo100-waechter</code> (systemd), Broker <code>127.0.0.1:1883</code> dort (Mosquitto im Docker, anonym).</p>
 <h2>MQTT-Themen (Prefix <code>qo100</code>)</h2>
 <table><tr><th>Thema</th><th>Inhalt</th></tr>
 <tr><td><code>qo100/waechter/online</code></td><td><code>online</code> / <code>offline</code> (retained, Last-Will)</td></tr>
@@ -22,9 +22,9 @@
 <tr><td><code>qo100/signale</code></td><td>Status aller Signale als JSON (retained), nur bei Änderung: <code>{"zeit","anzahl","bake","signale":[{"id","freq_mhz","sr_ks","bw_khz","seit","dauer_s","zustand":"aktiv|weg"}]}</code></td></tr>
 <tr><td><code>qo100/signale/anzahl</code></td><td>Zahl der aktiven Signale (retained)</td></tr></table>
 <h2>Bedienung</h2>
-<pre>mosquitto_sub -h 192.168.20.10 -t 'qo100/#' -v          # alles mitlesen
-ssh pi@192.168.20.10 'journalctl -u qo100-waechter -f'   # Dienstprotokoll
-ssh pi@192.168.20.10 'sudo systemctl restart qo100-waechter'
+<pre>mosquitto_sub -h 192.168.0.10 -t 'qo100/#' -v          # alles mitlesen
+ssh pi@192.168.0.10 'journalctl -u qo100-waechter -f'   # Dienstprotokoll
+ssh pi@192.168.0.10 'sudo systemctl restart qo100-waechter'
 ./install_pi.sh                                         # (neu) installieren / aktualisieren
 ./install_pi.sh --entfernen                             # Dienst wieder entfernen
 ./waechter_mqtt.py --prefix qo100test                   # lokaler Test mit anderem Prefix</pre>

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """stream_relay.py - Multicast-Transportstrom als HTTP-Stream verteilen (z.B. fuers Handy mit VLC) (DG7NDV)
 
-Aufruf:  ./stream_relay.py [--mcast 230.0.0.20] [--port 1234] [--http 8554] [--iface 192.168.20.204]
+Aufruf:  ./stream_relay.py [--mcast 230.0.0.20] [--port 1234] [--http 8554] [--iface 192.168.0.204]
 Handy (VLC, Netzwerkstream oeffnen):  http://<IP-dieses-Rechners>:8554/
 Playlist zum Herunterladen/Oeffnen:   http://<IP-dieses-Rechners>:8554/qo100.m3u   (Adresse passt sich der Anfrage an)
 Mehrere Zuschauer gleichzeitig moeglich. Ist kein Signal im Multicast, bleibt die Verbindung offen und wartet.

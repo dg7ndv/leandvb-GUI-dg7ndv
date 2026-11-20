@@ -5,7 +5,7 @@ Liest das BATC-Wideband-Spektrum (wss://eshail.batc.org.uk/wb/fft) und erkennt S
 (Kalibrierung 10490,5 MHz + 9 MHz, 5-s-Fenster, neu ab 50 % der Bilder, weg unter 20 % + 10 s Nachlauf, Bake getrennt).
 Nur Auslesen - keine Steuerung, kein Zugriff auf Empfaenger.
 
-Aufruf:  ./waechter_mqtt.py [--broker 192.168.20.10] [--port 1883] [--prefix qo100] [--user U --password P] [--quiet]
+Aufruf:  ./waechter_mqtt.py [--broker 192.168.0.10] [--port 1883] [--prefix qo100] [--user U --password P] [--quiet]
 
 MQTT-Themen (Prefix Standard "qo100"):
   qo100/waechter/online     "online"/"offline" (retained, Last-Will)
@@ -215,7 +215,7 @@ def ws_loop():
 def main():
     global ARGS, client
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--broker", default="192.168.20.10")
+    ap.add_argument("--broker", default="192.168.0.10")
     ap.add_argument("--port", type=int, default=1883)
     ap.add_argument("--prefix", default="qo100")
     ap.add_argument("--user")

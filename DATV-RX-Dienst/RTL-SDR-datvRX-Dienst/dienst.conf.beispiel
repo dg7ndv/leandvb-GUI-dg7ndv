@@ -38,7 +38,7 @@ multicast_auto = ja                # ja: per MQTT (qo100/udp/<Host>) pruefen, ob
 handy_port = 8555                  # schmale Handy-Seite (Signalliste, Tippen startet VLC) auf eigenem Port; 0 = aus
 
 # --- MQTT (leer = aus) --------------------------------------------------------------------------------------
-mqtt = 192.168.20.10:1883          # Broker HOST[:PORT]; immer der Mosquitto auf dem Hauspi (192.168.20.10)
+mqtt = 192.168.0.10:1883          # Broker HOST[:PORT]; immer der Mosquitto auf dem Hauspi (192.168.0.10)
 mqtt_prefix = qo100/dienst/%h      # %h = Hostname des Pis (je Pi eigene Themen am gemeinsamen Broker); Themen: <prefix>/signal/neu, /signal/weg, /signale, /messung, /bake, /cpu, /online
 
 # --- Webseite -----------------------------------------------------------------------------------------------

@@ -40,7 +40,7 @@ Gain:
 
 Weitere Beispiele:
   ./onair_dvbs2_api.py 739.5 --gain 32
-  ./onair_dvbs2_api.py 951.5 --host 192.168.1.20 --token $ONAIR_TOKEN
+  ./onair_dvbs2_api.py 951.5 --host 192.168.0.20 --token $ONAIR_TOKEN
   ./onair_dvbs2_api.py --list-modes         # Modi mit family-Nummern anzeigen
 """
 import argparse

@@ -21,14 +21,14 @@ Die Liste der Signale kommt aus dem BATC-Spektrum (<code>eshail.batc.org.uk/wb</
 <h2>Am Handy (VLC, Android oder iPhone)</h2>
 <ol>
 <li>VLC → <b>Mehr</b> bzw. <b>Netzwerk</b> → <b>Neuen Stream öffnen</b>.</li>
-<li>Adresse <code>http://192.168.20.204:8554/qo100.m3u</code> eingeben (IP des PCs), Pfeil antippen. Das Handy muss im Heim-WLAN (192.168.20.x) oder per VPN im selben Netz sein.</li>
+<li>Adresse <code>http://192.168.0.204:8554/qo100.m3u</code> eingeben (IP des PCs), Pfeil antippen. Das Handy muss im Heim-WLAN (192.168.20.x) oder per VPN im selben Netz sein.</li>
 <li>Die Playlist hat je einen Eintrag pro Signal: zuerst die Bake, dann die Signale nach Frequenz (z. B. „10493.258 MHz 500K“).</li>
 <li><b>▶| (nächstes)</b> und <b>|◀ (zurück)</b> schalten um. Nach dem Umschalten dauert es etwa 3–5 s, bis der Stick umgestellt und gelockt hat.</li>
 <li>Ist ein Signal inzwischen weg, antwortet der Zapper mit 404 und VLC springt weiter. Die Playlist neu laden zeigt die aktuelle Liste.</li>
 </ol>
 
 <h2>Webseite und Scan</h2>
-<p><code>http://192.168.20.204:8554/</code> zeigt eine Tabelle aller Signale. In jeder Zeile stehen <b>Rufzeichen/Dienst</b> (Dienstname aus der SDT des Senders), Provider,
+<p><code>http://192.168.0.204:8554/</code> zeigt eine Tabelle aller Signale. In jeder Zeile stehen <b>Rufzeichen/Dienst</b> (Dienstname aus der SDT des Senders), Provider,
 Modulation mit FEC, <b>Es/N0</b>, <b>MER</b> (aus der Konstellation, QPSK), <b>Pegel</b> am Stick (dB über Rauschen und dBFS, relativ, nicht in dBm kalibriert), Bitrate, TEI/CC-Fehler und die Uhrzeit der Messung.
 Die grüne Zeile ist das gerade empfangene Signal und läuft live. Antippen eines Signals öffnet den Stream.</p>
 <ul>

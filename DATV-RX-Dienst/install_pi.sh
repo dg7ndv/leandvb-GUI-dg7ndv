@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
 # install_pi.sh - QO-100-Waechter auf dem Hauspi installieren (Dienst qo100-waechter, MQTT-Broker 127.0.0.1:1883 dort)
-# Aufruf: ./install_pi.sh [pi@192.168.20.10]     (SSH-Schluessel-Login noetig, sudo auf dem Pi)
+# Aufruf: ./install_pi.sh [pi@192.168.0.10]     (SSH-Schluessel-Login noetig, sudo auf dem Pi)
 #         ./install_pi.sh --entfernen [ziel]     Dienst wieder entfernen
 set -eu
 cd "$(dirname "$0")"
-if [ "${1:-}" = "--entfernen" ]; then ZIEL=${2:-pi@192.168.20.10}
+if [ "${1:-}" = "--entfernen" ]; then ZIEL=${2:-pi@192.168.0.10}
     ssh "$ZIEL" 'sudo systemctl disable --now qo100-waechter; sudo rm -f /etc/systemd/system/qo100-waechter.service; sudo systemctl daemon-reload; rm -rf ~/waechter_mqtt'
     echo "entfernt"; exit 0
 fi
-ZIEL=${1:-pi@192.168.20.10}
+ZIEL=${1:-pi@192.168.0.10}
 ssh "$ZIEL" 'mkdir -p ~/waechter_mqtt'
 scp -q waechter_mqtt.py qo100-waechter.service "$ZIEL":waechter_mqtt/
 ssh "$ZIEL" 'chmod +x ~/waechter_mqtt/waechter_mqtt.py

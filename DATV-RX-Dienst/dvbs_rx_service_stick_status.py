@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """dvbs_rx_service_stick_status.py - Schnellstatus aller RTL-SDR-Sticks am Raspberry Pi (RTL-SDR-datvRX-Dienst). Nur lesen, es wird nichts umgestellt.
 
-Aufruf:  ./dvbs_rx_service_stick_status.py [--pi 192.168.20.102] [--port 8554] [--erwartet 4] [--usb] [--ssh dg7ndv@IP] [--watch SEK] [--json]
+Aufruf:  ./dvbs_rx_service_stick_status.py [--pi 192.168.0.102] [--port 8554] [--erwartet 4] [--usb] [--ssh dg7ndv@IP] [--watch SEK] [--json]
 
 Zeigt je Stick: Kennung, Typ (Hersteller/Modell, z.B. NooElec NESDR Nano 2 - per ssh aus sysfs, --kein-typ schaltet es aus), frei/belegt, Signal, Lock, Es/N0, MER, Bitrate, Rufzeichen, Bake-Offset. Mit --usb zusaetzlich (per ssh) die Zahl der
 am Pi erkannten RTL-Geraete, USB-Fehler im Kernel-Log und Unterspannung. --watch SEK wiederholt die Anzeige alle SEK Sekunden.
@@ -123,7 +123,7 @@ def lauf(a, base, ziel):
 
 def main():
     ap = argparse.ArgumentParser(description="Schnellstatus der RTL-Sticks am Pi")
-    ap.add_argument("--pi", default="192.168.20.102")
+    ap.add_argument("--pi", default="192.168.0.102")
     ap.add_argument("--port", type=int, default=8554)
     ap.add_argument("--erwartet", type=int, default=4, help="erwartete Zahl der Sticks")
     ap.add_argument("--usb", action="store_true", help="zusaetzlich USB-Pruefung per ssh")

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """dvbs_rx_service_stick_test.py - alle RTL-SDR-Sticks am Raspberry Pi (RTL-SDR-datvRX-Dienst) pruefen.
 
-Aufruf:  ./dvbs_rx_service_stick_test.py [--pi 192.168.20.102] [--port 8554] [--ssh dg7ndv@192.168.20.102]
+Aufruf:  ./dvbs_rx_service_stick_test.py [--pi 192.168.0.102] [--port 8554] [--ssh dg7ndv@192.168.0.102]
                          [--sek 25] [--signal MHZ [SR_KS]] [--list] [--stick N|RTLn|KENNUNG] [--nur 2,3] [--keine-usb]
   --list           alle Sticks auflisten (Nr., Name, Kennung, Typ, Stand) und beenden - es wird nichts getestet
   --stick WER      NUR diesen einen Stick testen: Nummer (2), Name (RTL2) oder Kennung/Seriennummer (stx:1090:26)
@@ -122,7 +122,7 @@ def bewerten(w, ist_bake=True):
 
 def main():
     ap = argparse.ArgumentParser(description="alle RTL-SDR-Sticks am Pi pruefen")
-    ap.add_argument("--pi", default="192.168.20.102")
+    ap.add_argument("--pi", default="192.168.0.102")
     ap.add_argument("--port", type=int, default=8554)
     ap.add_argument("--ssh", default=None, help="ssh-Ziel fuer die USB-Pruefung (Standard: dg7ndv@<pi>)")
     ap.add_argument("--sek", type=int, default=25, help="Wartezeit auf Lock je Messung")

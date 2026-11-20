@@ -7,7 +7,7 @@ Aendert sich das Signal (Frequenz, Datenrate, Modulation/FEC) oder das Videoform
 neu gestartet - wie die Datenraten-Resync-Routine der leandvb-GUI (Stop/Start statt Pause/Play). Ist ein Stick frei, endet sein Player.
 Baken (10491,5 MHz) werden nur wiedergegeben, wenn der Haken "Baken auch wiedergeben" gesetzt ist (sonst kein Player).
 
-Aufruf:  ./multiplayer.py [--server 192.168.20.102:8554] [--player vlc|mpv|ffplay] [--quad] [--cli]
+Aufruf:  ./multiplayer.py [--server 192.168.0.102:8554] [--player vlc|mpv|ffplay] [--quad] [--cli]
 Fenster: Knopf Quad = Raster auf dem Hauptbildschirm (2x2 bis 4 Sticks, 3x3 bis 9, sonst 4 Spalten, fester Platz je Stick, ueberlappungsfrei);
   Menue 'Fenster' = 5 Lagen (1, 2, 3, 4, 5+ Fenster): Lagen werden wie in der leandvb-GUI selbst gemerkt (Fenster verschieben, 1 Takt stehen lassen), beim
   Start/Neustart eines Players wiederhergestellt, per Menue von Hand speichern/laden/loeschen. Gespeichert in ~/.multiplayer.json.
@@ -898,9 +898,9 @@ class Multi:
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     c = load()
-    ap.add_argument("--server", default=c.get("server", "192.168.20.102:8554"), help="Dienst HOST:PORT (Standard 192.168.20.102:8554)")
+    ap.add_argument("--server", default=c.get("server", "192.168.0.102:8554"), help="Dienst HOST:PORT (Standard 192.168.0.102:8554)")
     ap.add_argument("--also", action="append", default=[], metavar="HOST[:PORT]", help="weiteren Pi dazunehmen (mehrfach moeglich; wird in ~/.multiplayer.json gemerkt)")
-    ap.add_argument("--mqtt", default=c.get("mqtt", ""), metavar="HOST[:PORT]", help="MQTT-Broker: Pis mit Dienst automatisch finden (qo100/udp/+), z.B. 192.168.20.10; ohne = nur Konfigurationsdatei/Handeingabe")
+    ap.add_argument("--mqtt", default=c.get("mqtt", ""), metavar="HOST[:PORT]", help="MQTT-Broker: Pis mit Dienst automatisch finden (qo100/udp/+), z.B. 192.168.0.10; ohne = nur Konfigurationsdatei/Handeingabe")
     ap.add_argument("--no-mqtt", action="store_true", help="keine MQTT-Suche (auch wenn in der Konfiguration ein Broker steht)")
     ap.add_argument("--player", default=c.get("player", "vlc"), choices=("vlc", "mpv", "ffplay", "system"))
     ap.add_argument("--bake", action="store_true", default=c.get("bake", False), help="Baken auch wiedergeben")

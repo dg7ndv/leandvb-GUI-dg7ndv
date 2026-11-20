@@ -12,7 +12,7 @@ Ein Programm ohne Oberflaeche, das alles zusammenfasst:
 
 Konfiguration: dienst.conf neben diesem Programm (Vorlage: dienst.conf.beispiel) - LO, ppm, Verstaerkung, Stick-Nummer, Ports, MQTT, Grenzwerte.
                Vorrang: Kommandozeile > dienst.conf > ~/.leandvb-GUI/parameters.json (LO/ppm) > Standardwerte.  Andere Datei: --config DATEI
-Aufruf:  ./datvrx_dienst.py [--http 8554] [--mcast 230.0.0.20] [--port 1234] [--mqtt 192.168.20.10[:1883]] [--prefix qo100/dienst]
+Aufruf:  ./datvrx_dienst.py [--http 8554] [--mcast 230.0.0.20] [--port 1234] [--mqtt 192.168.0.10[:1883]] [--prefix qo100/dienst]
                             [--dwell 28] [--idle 60] [--lo 9540.054] [--ppm 26] [--quiet]
 Start/Stopp bequem:  ./dienst.sh start|stop|status|log
 

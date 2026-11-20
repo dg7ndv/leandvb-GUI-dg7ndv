@@ -67,7 +67,7 @@ g.line(360, 150, 560, 130, "#7a4fb0", 2, True, "6 4"); g.line(360, 480, 560, 190
 g.rect(1060, 60, 420, 330, "#fff", "#1f5fa8", 12, 2)
 g.text(1270, 90, "PC: MultiPlayer / leandvb-GUI", 15, "#1f5fa8", "bold", "middle")
 g.text(1076, 122, "Menue \"Pis\":", 12.5, weight="bold")
-for i, t in enumerate(("☑ datv-rx (192.168.20.175:8554)", "☑ P5NDI1 (192.168.20.102:8554)  [Steuer-Pi]", "Pi von Hand hinzufuegen …", "MQTT-Broker: 192.168.20.10 …", "Jetzt per MQTT suchen")):
+for i, t in enumerate(("☑ datv-rx (192.168.0.175:8554)", "☑ P5NDI1 (192.168.0.102:8554)  [Steuer-Pi]", "Pi von Hand hinzufuegen …", "MQTT-Broker: 192.168.0.10 …", "Jetzt per MQTT suchen")):
     g.text(1090, 148 + i * 22, t, 12)
 g.text(1076, 278, "Ein Player je Stick:  RTL1@datv-rx … RTL4@datv-rx,", 12); g.text(1076, 298, "RTL1@P5NDI1, RTL2@P5NDI1", 12)
 g.text(1076, 330, "Ohne MQTT: Pi-Liste in ~/.multiplayer.json", 11.5, "#5b6573"); g.text(1076, 350, "oder --also HOST[:PORT] / Handeingabe", 11.5, "#5b6573")

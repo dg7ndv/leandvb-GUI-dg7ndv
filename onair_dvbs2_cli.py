@@ -46,7 +46,7 @@ Hinweise:
     kann sie ansprechen: ./onair_dvbs2_api.py 437 --device keins --port 8765. Die Befehle (POST /frequency,
     /gain mit lna, vga, amp oder db, /stop, /start; GET /status, /telemetry) stehen in onair_anleitung.html.
   * Gerät: Standard --hackrf. Ein Netzwerk-Radio wählst du mit --net-radio TYP,HOST,PORT
-    (zum Beispiel rtltcp,192.168.2.197,1234), dann entfällt --hackrf automatisch.
+    (zum Beispiel rtltcp,192.168.0.197,1234), dann entfällt --hackrf automatisch.
     Mit --no-hackrf und --radio schlüssel=wert (oder Optionen nach --) geht noch mehr.
   * Das Programm onair-cli wird gesucht: --bin, Umgebungsvariable ONAIR_CLI, PATH
     (onair-cli, dect2cli), dann neben diesem Skript.
@@ -453,11 +453,11 @@ def parse_gain(s):
 
 
 def parse_net_radio(s):
-    """'rtltcp,192.168.2.197,1234' -> unverändert (geprüft)"""
+    """'rtltcp,192.168.0.197,1234' -> unverändert (geprüft)"""
     m = re.fullmatch(r"([A-Za-z0-9_-]+),([^,\s]+),([0-9]{1,5})", s.strip())
     if not m or not (1 <= int(m.group(3)) <= 65535):
         raise argparse.ArgumentTypeError(
-            f"--net-radio erwartet TYP,HOST,PORT (zum Beispiel rtltcp,192.168.2.197,1234): {s!r}")
+            f"--net-radio erwartet TYP,HOST,PORT (zum Beispiel rtltcp,192.168.0.197,1234): {s!r}")
     return f"{m.group(1)},{m.group(2)},{int(m.group(3))}"
 
 
@@ -510,7 +510,7 @@ def main():
     g.add_argument("--hackrf", action=argparse.BooleanOptionalAction, default=True,
                    help="HackRF verwenden (Standard an; --no-hackrf lässt die Option weg)")
     g.add_argument("--net-radio", type=parse_net_radio, default=None, metavar="TYP,HOST,PORT",
-                   help="Netzwerk-Radio statt HackRF, z. B. rtltcp,192.168.2.197,1234 "
+                   help="Netzwerk-Radio statt HackRF, z. B. rtltcp,192.168.0.197,1234 "
                         "(ersetzt --hackrf)")
     g.add_argument("--radio", action="append", type=parse_radio, default=[], metavar="SCHLÜSSEL=WERT",
                    help="Geräteeinstellung an onair-cli weiterreichen (mehrfach möglich)")

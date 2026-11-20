@@ -25,7 +25,7 @@ Dauerbetrieb mit Fernsteuerung (so nutzt die leandvb-GUI das Skript):
       STOP                            beenden (mit --restart-enigma startet Enigma wieder)
   Beispiel:
       python3 dvb_direct.py --stop-enigma --minimal --udp 230.0.0.9:1234 --ctrl-port 55600
-      echo -n "TUNE 10496.201 500 h" | nc -u -w1 192.168.20.220 55600
+      echo -n "TUNE 10496.201 500 h" | nc -u -w1 192.168.0.220 55600
 """
 import argparse, ctypes, os, select, socket, struct, sys, time
 
